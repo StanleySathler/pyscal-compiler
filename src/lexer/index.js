@@ -146,6 +146,13 @@ module.exports = class Lexer {
   }
 
   /**
+   * Get all registered tokens.
+   */
+  getTokens() {
+    return this.__tokens
+  }
+
+  /**
    * Get the file reader instance.
    */
   getFileReader() {
