@@ -1,0 +1,4 @@
+class CodeSample02:
+  def void hello(String name):
+  end;
+end.
