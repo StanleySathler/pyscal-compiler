@@ -36,12 +36,42 @@ module.exports = class Lexer {
 
       /* State: initial */
       if (this.isState(INITIAL_STATE)) {
-        if (char === '.') {
+        if (char === '[') {
+          this.addToken(new Token(TOKEN_NAMES.openBracket, char))
+        }
+
+        else if (char === ']') {
+          this.addToken(new Token(TOKEN_NAMES.closeBracket, char))
+        }
+
+        else if (char === '.') {
           this.addToken(new Token(TOKEN_NAMES.dot, char))
+        }
+
+        else if (char === '<') {
+          this.appendToLexem(char)
+          this.setState(6)
+        }
+
+        else if (char === '>') {
+          this.appendToLexem(char)
+          this.setState(9)
         }
 
         else if (char === ':') {
           this.addToken(new Token(TOKEN_NAMES.collon, char))
+        }
+
+        else if (char === '(') {
+          this.addToken(new Token(TOKEN_NAMES.openRoundBrackets, char))
+        }
+
+        else if (char === ')') {
+          this.addToken(new Token(TOKEN_NAMES.closeRoundBrackets, char))
+        }
+
+        else if (char === ';') {
+          this.addToken(new Token(TOKEN_NAMES.semiCollon, char))
         }
 
         else if (isLetter(char)) {
@@ -57,11 +87,43 @@ module.exports = class Lexer {
         }
 
         else {
-          const lexem = this.getLexem()
-          this.resetState()
+          this.addToken(new Token(TOKEN_NAMES.id, this.getLexem()))
           this.resetLexem()
+          this.resetState()
           this.getFileReader().setCursorToPreviousPosition()
-          this.addToken(new Token(TOKEN_NAMES.id, lexem))
+        }
+      }
+
+      /* State: 6 */
+      else if (this.isState(6)) {
+        if (char === '=') {
+          const lexem = this.getLexem()
+          this.addToken(new Token(TOKEN_NAMES.lessThanOrEqual, `${lexem}${char}`))
+          this.resetLexem()
+          this.resetState()
+        }
+
+        else {
+          this.addToken(new Token(TOKEN_NAMES.lessThan, this.getLexem()))
+          this.resetLexem()
+          this.resetState()
+          this.getFileReader().setCursorToPreviousPosition()
+        }
+      }
+
+      /* State: 9 */
+      else if (this.isState(9)) {
+        if (char === '=') {
+          this.addToken(new Token(TOKEN_NAMES.OP_GE, '>='))
+          this.resetLexem()
+          this.resetState()
+        }
+
+        else {
+          this.addToken(new Token(TOKEN_NAMES.OP_GT, '>'))
+          this.resetLexem()
+          this.resetState()
+          this.getFileReader().setCursorToPreviousPosition()
         }
       }
     }
