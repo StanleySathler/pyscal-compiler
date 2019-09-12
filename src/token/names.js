@@ -21,4 +21,10 @@ module.exports = {
 
   /* Assignment: '=' */
   OP_ASG: 'OP_ASG',
+
+  /* Not equal: '!=' */
+  OP_NE: 'OP_NE',
+
+  /* Negation: '!' */
+  OP_NGT: 'OP_NGT',
 }
