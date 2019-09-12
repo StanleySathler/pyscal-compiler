@@ -56,6 +56,10 @@ module.exports = class Lexer {
           this.setState(9)
         }
 
+        else if (char === '=') {
+          this.setState(12)
+        }
+
         else if (char === ':') {
           this.addToken(new Token(TOKEN_NAMES.collon, char))
         }
@@ -115,6 +119,20 @@ module.exports = class Lexer {
 
         else {
           this.addToken(new Token(TOKEN_NAMES.OP_GT, '>'))
+          this.resetState()
+          this.getFileReader().setCursorToPreviousPosition()
+        }
+      }
+
+      /* State: 12 */
+      else if (this.isState(12)) {
+        if (char === '=') {
+          this.addToken(new Token(TOKEN_NAMES.OP_EQ, '=='))
+          this.resetState()
+        }
+
+        else {
+          this.addToken(new Token(TOKEN_NAMES.OP_ASG, '='))
           this.resetState()
           this.getFileReader().setCursorToPreviousPosition()
         }

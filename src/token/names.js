@@ -15,4 +15,10 @@ module.exports = {
 
   /* Greater than: '>' */
   OP_GT: 'OP_GT',
+
+  /* Equal to: '==' */
+  OP_EQ: 'OP_EQ',
+
+  /* Assignment: '=' */
+  OP_ASG: 'OP_ASG',
 }
