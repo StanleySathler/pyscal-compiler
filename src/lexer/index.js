@@ -49,12 +49,10 @@ module.exports = class Lexer {
         }
 
         else if (char === '<') {
-          this.appendToLexem(char)
           this.setState(6)
         }
 
         else if (char === '>') {
-          this.appendToLexem(char)
           this.setState(9)
         }
 
@@ -97,15 +95,12 @@ module.exports = class Lexer {
       /* State: 6 */
       else if (this.isState(6)) {
         if (char === '=') {
-          const lexem = this.getLexem()
-          this.addToken(new Token(TOKEN_NAMES.lessThanOrEqual, `${lexem}${char}`))
-          this.resetLexem()
+          this.addToken(new Token(TOKEN_NAMES.lessThanOrEqual, '<='))
           this.resetState()
         }
 
         else {
-          this.addToken(new Token(TOKEN_NAMES.lessThan, this.getLexem()))
-          this.resetLexem()
+          this.addToken(new Token(TOKEN_NAMES.lessThan, '<'))
           this.resetState()
           this.getFileReader().setCursorToPreviousPosition()
         }
@@ -115,13 +110,11 @@ module.exports = class Lexer {
       else if (this.isState(9)) {
         if (char === '=') {
           this.addToken(new Token(TOKEN_NAMES.OP_GE, '>='))
-          this.resetLexem()
           this.resetState()
         }
 
         else {
           this.addToken(new Token(TOKEN_NAMES.OP_GT, '>'))
-          this.resetLexem()
           this.resetState()
           this.getFileReader().setCursorToPreviousPosition()
         }
