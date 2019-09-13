@@ -64,8 +64,20 @@ module.exports = class Lexer {
           this.setState(14)
         }
 
-        else if (char === ':') {
-          this.addToken(new Token(TOKEN_NAMES.collon, char))
+        else if (char === '/') {
+          this.addToken(new Token('OP_DIV', '/'))
+        }
+
+        else if (char === '*') {
+          this.addToken(new Token('OP_MULT', '*'))
+        }
+
+        else if (char === '-') {
+          this.addToken(new Token('OP_SUB', '-'))
+        }
+
+        else if (char === '+') {
+          this.addToken(new Token('OP_SUM', '+'))
         }
 
         else if (char === '(') {
@@ -76,8 +88,25 @@ module.exports = class Lexer {
           this.addToken(new Token(TOKEN_NAMES.closeRoundBrackets, char))
         }
 
+        else if (char === ',') {
+          this.addToken(new Token('COMMA', ','))
+        }
+
         else if (char === ';') {
-          this.addToken(new Token(TOKEN_NAMES.semiCollon, char))
+          this.addToken(new Token('SEMI_COLLON', ';'))
+        }
+
+        else if (char === ':') {
+          this.addToken(new Token('COLLON', ':'))
+        }
+
+        else if (char === '"') {
+          this.setState(32)
+        }
+
+        else if (isNumber(char)) {
+          this.setState(27)
+          this.appendToLexem(char)
         }
 
         else if (isLetter(char)) {
@@ -153,6 +182,59 @@ module.exports = class Lexer {
           this.addToken(new Token(TOKEN_NAMES.OP_NGT, '!'))
           this.resetState()
           this.getFileReader().setCursorToPreviousPosition()
+        }
+      }
+
+      /* State: 27 */
+      else if (this.isState(27)) {
+        if (isNumber(char)) {
+          this.appendToLexem(char)
+          continue
+        }
+
+        else if (char === '.') {
+          this.appendToLexem(char)
+          this.setState(29)
+        }
+
+        else {
+          const lexem = `${this.getLexem()}${char}`
+          this.addToken(new Token('CONST_INT', lexem))
+        }
+      }
+
+      /* State: 29 */
+      else if (this.isState(29)) {
+        if (isNumber(char)) {
+          this.appendToLexem(char)
+          this.setState(30)
+        }
+
+        else {
+          // Should throw lexical error
+        }
+      }
+
+      /* State: 30 */
+      else if (this.isState(30)) {
+        if (isNumber(char)) {
+          this.appendToLexem(char)
+        }
+
+        else {
+          const lexem = `${this.getLexem()}${char}`
+          this.addToken(new Token('CONST_DOUBLE', lexem))
+        }
+      }
+
+      /* State: 32 */
+      else if (this.isState(32)) {
+        if (char === '"') {
+          this.addToken(new Token('CONST_STRING', this.getLexem()))
+        }
+
+        else {
+          this.appendToLexem(char)
         }
       }
     }
