@@ -1,2 +1,9 @@
 class CodeSample01:
+  defstatic void main(String[] args):
+    double age;
+
+    if (age == 8.8):
+      hello("Compiler", age);
+    end;
+  end;
 end.

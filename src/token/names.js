@@ -27,4 +27,16 @@ module.exports = {
 
   /* Negation: '!' */
   OP_NGT: 'OP_NGT',
+
+  /* Comma: ',' */
+  COMMA: 'COMMA',
+
+  /* Integer number: [0-9]+ */
+  CONST_INT: 'CONST_INT',
+
+  /* Double number: [0-9]+.[0-9]+ */
+  CONST_DBL: 'CONST_DBL',
+
+  /* String */
+  CONST_STR: 'CONST_STR',
 }

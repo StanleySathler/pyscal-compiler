@@ -198,8 +198,10 @@ module.exports = class Lexer {
         }
 
         else {
-          const lexem = `${this.getLexem()}${char}`
-          this.addToken(new Token('CONST_INT', lexem))
+          this.addToken(new Token('CONST_INT', this.getLexem()))
+          this.resetLexem()
+          this.resetState()
+          this.getFileReader().setCursorToPreviousPosition()
         }
       }
 
@@ -222,15 +224,19 @@ module.exports = class Lexer {
         }
 
         else {
-          const lexem = `${this.getLexem()}${char}`
-          this.addToken(new Token('CONST_DOUBLE', lexem))
+          this.addToken(new Token(TOKEN_NAMES.CONST_DBL, this.getLexem()))
+          this.resetLexem()
+          this.resetState()
+          this.getFileReader().setCursorToPreviousPosition()
         }
       }
 
       /* State: 32 */
       else if (this.isState(32)) {
         if (char === '"') {
-          this.addToken(new Token('CONST_STRING', this.getLexem()))
+          this.addToken(new Token(TOKEN_NAMES.CONST_STR, this.getLexem()))
+          this.resetLexem()
+          this.resetState()
         }
 
         else {
