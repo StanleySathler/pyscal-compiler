@@ -3,200 +3,200 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>1109.0</x>
-			<y>478.0</y>
+			<x>1061.0</x>
+			<y>413.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>1225.0</x>
-			<y>390.0</y>
-			<label>&lt;O_BRACKET, '['&gt;</label>
+			<x>1177.0</x>
+			<y>325.0</y>
+			<label>(OPEN_BRACKET, [)</label>
 			<final/>
 		</state>
 		<state id="2" name="q2">
-			<x>1249.0</x>
-			<y>304.0</y>
-			<label>&lt;C_BRACKET, ']'&gt;</label>
+			<x>1281.0</x>
+			<y>345.0</y>
+			<label>(CLOSE_BRACKET, ])</label>
 			<final/>
 		</state>
 		<state id="3" name="q3">
-			<x>1197.0</x>
-			<y>546.0</y>
-			<label>&lt;DOT, '.'&gt;</label>
+			<x>1149.0</x>
+			<y>481.0</y>
+			<label>(DOT, .)</label>
 			<final/>
 		</state>
 		<state id="4" name="q4">
-			<x>821.0</x>
-			<y>336.0</y>
+			<x>773.0</x>
+			<y>271.0</y>
 		</state>
 		<state id="5" name="q5">
-			<x>719.0</x>
-			<y>336.0</y>
-			<label>&lt;ID, lexem&gt;</label>
+			<x>671.0</x>
+			<y>271.0</y>
+			<label>(ID, lexem); goBack</label>
 			<final/>
 		</state>
 		<state id="6" name="q6">
-			<x>1226.0</x>
-			<y>479.0</y>
+			<x>1236.0</x>
+			<y>472.0</y>
 		</state>
 		<state id="7" name="q7">
 			<x>1302.0</x>
-			<y>551.0</y>
-			<label>&lt;OP, '&lt;='&gt;</label>
+			<y>532.0</y>
+			<label>(OP_LE, &lt;=)</label>
 			<final/>
 		</state>
 		<state id="8" name="q8">
-			<x>1373.0</x>
-			<y>479.0</y>
-			<label>(&lt;OP, '&lt;'&gt;); goBack</label>
+			<x>1386.0</x>
+			<y>472.0</y>
+			<label>(OP_LT, &lt;); goBack</label>
 			<final/>
 		</state>
 		<state id="9" name="q9">
-			<x>1237.0</x>
-			<y>224.0</y>
+			<x>1167.0</x>
+			<y>227.0</y>
 		</state>
 		<state id="10" name="q10">
-			<x>1323.0</x>
-			<y>224.0</y>
-			<label>&lt;OP, '&gt;='&gt;</label>
+			<x>1244.0</x>
+			<y>227.0</y>
+			<label>(OP_GE, &gt;=)</label>
 			<final/>
 		</state>
 		<state id="11" name="q11">
-			<x>1408.0</x>
-			<y>143.0</y>
-			<label>(&lt;OP, '&gt;'&gt;); goBack</label>
+			<x>1329.0</x>
+			<y>146.0</y>
+			<label>(OP_GT, &gt;); goBack</label>
 			<final/>
 		</state>
 		<state id="12" name="q12">
-			<x>1109.0</x>
-			<y>308.0</y>
+			<x>1129.0</x>
+			<y>727.0</y>
 		</state>
 		<state id="13" name="q13">
-			<x>1109.0</x>
-			<y>219.0</y>
-			<label>&lt;OP, '=='&gt;</label>
+			<x>1246.0</x>
+			<y>727.0</y>
+			<label>(OP_EQ, ==)</label>
 			<final/>
 		</state>
 		<state id="14" name="q14">
-			<x>1013.0</x>
-			<y>651.0</y>
+			<x>965.0</x>
+			<y>586.0</y>
 		</state>
 		<state id="15" name="q15">
-			<x>1013.0</x>
-			<y>736.0</y>
-			<label>&lt;OP, '!='&gt;</label>
+			<x>965.0</x>
+			<y>671.0</y>
+			<label>(OP_NE, !=)</label>
 			<final/>
 		</state>
 		<state id="16" name="q16">
-			<x>932.0</x>
-			<y>478.0</y>
-			<label>&lt;OP, '/'&gt;</label>
+			<x>884.0</x>
+			<y>413.0</y>
+			<label>(OP_DIV, /)</label>
 			<final/>
 		</state>
 		<state id="17" name="q17">
-			<x>937.0</x>
-			<y>597.0</y>
+			<x>889.0</x>
+			<y>532.0</y>
 			<label>&lt;OP, '*'&gt;</label>
 			<final/>
 		</state>
 		<state id="18" name="q18">
-			<x>1109.0</x>
-			<y>692.0</y>
-			<label>&lt;OP, '-'&gt;</label>
+			<x>1061.0</x>
+			<y>627.0</y>
+			<label>(OP_MINUS, -)</label>
 			<final/>
 		</state>
 		<state id="19" name="q19">
-			<x>1230.0</x>
-			<y>724.0</y>
-			<label>&lt;OP, '+'&gt;</label>
+			<x>1182.0</x>
+			<y>659.0</y>
+			<label>(OP_PLUS, +)</label>
 			<final/>
 		</state>
 		<state id="20" name="q20">
-			<x>941.0</x>
-			<y>759.0</y>
-			<label>&lt;OP_UN, '!'&gt;</label>
+			<x>893.0</x>
+			<y>694.0</y>
+			<label>(OP_NEGT, !); goBack</label>
 			<final/>
 		</state>
 		<state id="21" name="q21">
-			<x>953.0</x>
-			<y>353.0</y>
-			<label>&lt;OPEN_P, '('&gt;</label>
+			<x>905.0</x>
+			<y>288.0</y>
+			<label>(OPEN_PARENT, ()</label>
 			<final/>
 		</state>
 		<state id="22" name="q22">
-			<x>995.0</x>
-			<y>238.0</y>
-			<label>&lt;CLOSE_P, ')'&gt;</label>
+			<x>1258.0</x>
+			<y>413.0</y>
+			<label>(CLOSE_PARENT, ))</label>
 			<final/>
 		</state>
 		<state id="23" name="q23">
-			<x>1030.0</x>
-			<y>124.0</y>
-			<label>&lt;COMMA, ','&gt;</label>
+			<x>1025.0</x>
+			<y>551.0</y>
+			<label>(COMMA, ,)</label>
 			<final/>
 		</state>
 		<state id="24" name="q24">
-			<x>894.0</x>
-			<y>209.0</y>
-			<label>&lt;SEMI_COLLON, ';'&gt;</label>
+			<x>846.0</x>
+			<y>144.0</y>
+			<label>(SEMI_COLLON, ;)</label>
 			<final/>
 		</state>
 		<state id="25" name="q25">
-			<x>1204.0</x>
-			<y>129.0</y>
-			<label>(&lt;OP, '='&gt;); goBack</label>
+			<x>1197.0</x>
+			<y>794.0</y>
+			<label>(OP_ASG, =); goBack</label>
 			<final/>
 		</state>
 		<state id="26" name="q26">
-			<x>806.0</x>
-			<y>407.0</y>
-			<label>&lt;COLLON, ':'&gt;</label>
+			<x>758.0</x>
+			<y>342.0</y>
+			<label>(COLLON, :)</label>
 			<final/>
 		</state>
 		<state id="27" name="q27">
-			<x>847.0</x>
-			<y>570.0</y>
+			<x>799.0</x>
+			<y>505.0</y>
 		</state>
 		<state id="28" name="q28">
-			<x>743.0</x>
-			<y>570.0</y>
-			<label>&lt;CONST_INT, lexem&gt;</label>
+			<x>665.0</x>
+			<y>505.0</y>
+			<label>(CONST_INT, lexem); goBack</label>
 			<final/>
 		</state>
 		<state id="29" name="q29">
-			<x>743.0</x>
-			<y>654.0</y>
+			<x>695.0</x>
+			<y>589.0</y>
 		</state>
 		<state id="30" name="q30">
-			<x>648.0</x>
-			<y>654.0</y>
+			<x>600.0</x>
+			<y>589.0</y>
 		</state>
 		<state id="31" name="q31">
-			<x>552.0</x>
-			<y>654.0</y>
-			<label>&lt;CONST_DOUBLE, lexem&gt;</label>
+			<x>504.0</x>
+			<y>589.0</y>
+			<label>(CONST_DBL, lexem); goBack</label>
 			<final/>
 		</state>
 		<state id="32" name="q32">
-			<x>882.0</x>
-			<y>722.0</y>
+			<x>834.0</x>
+			<y>657.0</y>
 		</state>
 		<state id="33" name="q33">
-			<x>802.0</x>
-			<y>722.0</y>
-			<label>(CONST_STRING, lexem)</label>
+			<x>754.0</x>
+			<y>657.0</y>
+			<label>(CONST_STR, lexem)</label>
 			<final/>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>4</from>
-			<to>5</to>
-			<read>other</read>
+			<from>0</from>
+			<to>14</to>
+			<read>!</read>
 		</transition>
 		<transition>
-			<from>6</from>
-			<to>7</to>
-			<read>=</read>
+			<from>0</from>
+			<to>1</to>
+			<read>[</read>
 		</transition>
 		<transition>
 			<from>0</from>
@@ -204,24 +204,49 @@
 			<read>"</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>18</to>
-			<read>-</read>
+			<from>6</from>
+			<to>8</to>
+			<read>other</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>24</to>
-			<read>;</read>
+			<to>16</to>
+			<read>/</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>5</to>
+			<read>other</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>17</to>
-			<read>*</read>
+			<to>19</to>
+			<read>+</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>14</to>
-			<read>!</read>
+			<to>9</to>
+			<read>&gt;</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>12</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>30</from>
+			<to>31</to>
+			<read>other</read>
+		</transition>
+		<transition>
+			<from>32</from>
+			<to>33</to>
+			<read>"</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>3</to>
+			<read>.</read>
 		</transition>
 		<transition>
 			<from>4</from>
@@ -230,23 +255,48 @@
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>9</to>
-			<read>&gt;</read>
+			<to>4</to>
+			<read>a-z | A-Z</read>
 		</transition>
 		<transition>
-			<from>14</from>
-			<to>15</to>
+			<from>9</from>
+			<to>10</to>
 			<read>=</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>21</to>
-			<read>(</read>
+			<to>23</to>
+			<read>,</read>
 		</transition>
 		<transition>
-			<from>12</from>
-			<to>13</to>
+			<from>6</from>
+			<to>7</to>
 			<read>=</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>6</to>
+			<read>&lt;</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>24</to>
+			<read>;</read>
+		</transition>
+		<transition>
+			<from>29</from>
+			<to>30</to>
+			<read>0-9</read>
+		</transition>
+		<transition>
+			<from>27</from>
+			<to>27</to>
+			<read>0-9</read>
+		</transition>
+		<transition>
+			<from>30</from>
+			<to>30</to>
+			<read>0-9</read>
 		</transition>
 		<transition>
 			<from>27</from>
@@ -254,14 +304,14 @@
 			<read>.</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>19</to>
-			<read>+</read>
+			<from>14</from>
+			<to>15</to>
+			<read>=</read>
 		</transition>
 		<transition>
-			<from>32</from>
-			<to>33</to>
-			<read>"</read>
+			<from>14</from>
+			<to>20</to>
+			<read>other</read>
 		</transition>
 		<transition>
 			<from>9</from>
@@ -274,94 +324,19 @@
 			<read>0-9</read>
 		</transition>
 		<transition>
-			<from>27</from>
-			<to>27</to>
-			<read>0-9</read>
-		</transition>
-		<transition>
-			<from>30</from>
-			<to>30</to>
-			<read>0-9</read>
-		</transition>
-		<transition>
-			<from>30</from>
-			<to>31</to>
-			<read>other</read>
+			<from>0</from>
+			<to>0</to>
+			<read>space, \n, \t</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>4</to>
-			<read>a-z | A-Z</read>
-		</transition>
-		<transition>
-			<from>29</from>
-			<to>30</to>
-			<read>0-9</read>
-		</transition>
-		<transition>
-			<from>27</from>
-			<to>28</to>
-			<read>other</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>12</to>
-			<read>=</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>16</to>
-			<read>/</read>
-		</transition>
-		<transition>
-			<from>6</from>
-			<to>8</to>
-			<read>other</read>
+			<to>18</to>
+			<read>-</read>
 		</transition>
 		<transition>
 			<from>32</from>
 			<to>32</to>
 			<read>any</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>22</to>
-			<read>)</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>3</to>
-			<read>.</read>
-		</transition>
-		<transition>
-			<from>14</from>
-			<to>20</to>
-			<read>other</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>23</to>
-			<read>,</read>
-		</transition>
-		<transition>
-			<from>9</from>
-			<to>10</to>
-			<read>=</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>26</to>
-			<read>:</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>6</to>
-			<read>&lt;</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>2</to>
-			<read>]</read>
 		</transition>
 		<transition>
 			<from>12</from>
@@ -370,20 +345,50 @@
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>1</to>
-			<read>[</read>
+			<to>17</to>
+			<read>*</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>22</to>
+			<read>)</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>21</to>
+			<read>(</read>
+		</transition>
+		<transition>
+			<from>27</from>
+			<to>28</to>
+			<read>other</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>26</to>
+			<read>:</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>]</read>
+		</transition>
+		<transition>
+			<from>12</from>
+			<to>13</to>
+			<read>=</read>
 		</transition>
 		<note>
-			<text>Remember: whenever you read an 
-"other", you must return the current
-cursor by one char.</text>
-			<x>424.0</x>
-			<y>94.0</y>
+			<text>Whenever you read an "other", you 
+must return the current cursor by 
+one char.</text>
+			<x>561.0</x>
+			<y>109.0</y>
 		</note>
 		<note>
 			<text>An "any" means any ASCII character</text>
-			<x>425.0</x>
-			<y>154.0</y>
+			<x>561.0</x>
+			<y>86.0</y>
 		</note>
 	</automaton>
 </structure>
