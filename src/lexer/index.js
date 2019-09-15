@@ -1,4 +1,5 @@
 const Token = require('../token')
+const SymbolTable = require('../symbol-table')
 const TOKEN_NAMES = require('../token/names')
 const { isLetter, isNumber } = require('../utils')
 
@@ -8,6 +9,9 @@ module.exports = class Lexer {
   constructor(fileReader) {
     /* The source code file */
     this.__fileReader = fileReader
+
+    /* The symbol table */
+    this.__symbolTable = new SymbolTable()
 
     /* Automata's current state */
     this.__state = INITIAL_STATE
@@ -122,10 +126,16 @@ module.exports = class Lexer {
         }
 
         else {
-          this.addToken(new Token(TOKEN_NAMES.id, this.getLexem()))
+          const lexem = this.getLexem()
+          const token = new Token(TOKEN_NAMES.id, lexem)
+          this.addToken(token)
           this.resetLexem()
           this.resetState()
           this.getFileReader().setCursorToPreviousPosition()
+
+          if (!this.getSymbolTable().has(lexem)) {
+            this.getSymbolTable().set(lexem, token)
+          }
         }
       }
 
@@ -336,5 +346,12 @@ module.exports = class Lexer {
    */
   getFileReader() {
     return this.__fileReader
+  }
+
+  /**
+   * Get the symbol table instance.
+   */
+  getSymbolTable() {
+    return this.__symbolTable
   }
 }
