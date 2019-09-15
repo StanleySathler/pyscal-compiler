@@ -60,6 +60,6 @@ module.exports = class SymbolTable {
    * @param {*} lexem
    */
   has(lexem) {
-    return (typeof this.__symbols[lexem] !== undefined)
+    return (this.__symbols[lexem] !== undefined)
   }
 }
