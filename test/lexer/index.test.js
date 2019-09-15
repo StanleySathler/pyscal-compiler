@@ -65,5 +65,21 @@ describe('Given a Lexer', () => {
 
       expect(actual).toEqual(expected)
     })
+
+    it('should add the identifiers to the symbol table', () => {
+      const tableSymbol = lexer.getSymbolTable()
+      expect(tableSymbol.get('class').toString()).toEqual('<KW_CLASS, class>')
+      expect(tableSymbol.get('CodeSample01').toString()).toEqual('<ID, CodeSample01>')
+      expect(tableSymbol.get('defstatic').toString()).toEqual('<KW_DEFSTATIC, defstatic>')
+      expect(tableSymbol.get('void').toString()).toEqual('<KW_VOID, void>')
+      expect(tableSymbol.get('main').toString()).toEqual('<KW_MAIN, main>')
+      expect(tableSymbol.get('String').toString()).toEqual('<KW_STRING, String>')
+      expect(tableSymbol.get('args').toString()).toEqual('<ID, args>')
+      expect(tableSymbol.get('double').toString()).toEqual('<KW_DOUBLE, double>')
+      expect(tableSymbol.get('age').toString()).toEqual('<ID, age>')
+      expect(tableSymbol.get('if').toString()).toEqual('<KW_IF, if>')
+      expect(tableSymbol.get('hello').toString()).toEqual('<ID, hello>')
+      expect(tableSymbol.get('end').toString()).toEqual('<KW_END, end>')
+    })
   })
 })
