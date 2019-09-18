@@ -112,6 +112,10 @@ module.exports = class Lexer {
           this.setState(32)
         }
 
+        else if (char === '#') {
+          this.setState(34)
+        }
+
         else if (isNumber(char)) {
           this.setState(27)
           this.appendToLexem(char)
@@ -255,6 +259,13 @@ module.exports = class Lexer {
 
         else {
           this.appendToLexem(char)
+        }
+      }
+
+      /* State: 34 */
+      else if (this.isState(34)) {
+        if (char === '\n') {
+          this.resetState()
         }
       }
     }
