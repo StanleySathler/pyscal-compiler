@@ -81,5 +81,9 @@ describe('Given a Lexer', () => {
       expect(tableSymbol.get('hello').toString()).toEqual('<ID, hello>')
       expect(tableSymbol.get('end').toString()).toEqual('<KW_END, end>')
     })
+
+    it('should correctly count the lines', () => {
+      expect(lexer.getLine()).toEqual(12)
+    })
   })
 })

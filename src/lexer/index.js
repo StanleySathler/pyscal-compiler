@@ -38,6 +38,14 @@ module.exports = class Lexer {
     while (this.getFileReader().hasNextChar()) {
       char = this.getFileReader().readNextChar()
 
+      /* Control the current line and column */
+      if (char === '\n') {
+        this.incrementLine()
+        this.resetColumn()
+      } else {
+        this.incrementColumn()
+      }
+
       /* State: initial */
       if (this.isState(INITIAL_STATE)) {
         if (char === ' ' || char === '\n' || char === '\t') {
@@ -294,6 +302,20 @@ module.exports = class Lexer {
    */
   isState(state) {
     return this.__state === state
+  }
+
+  /**
+   * Get the current line.
+   */
+  getLine() {
+    return this.__line
+  }
+
+  /**
+   * Get the current column.
+   */
+  getColumn() {
+    return this.__column
   }
 
   /**
