@@ -40,7 +40,11 @@ module.exports = class Lexer {
 
       /* State: initial */
       if (this.isState(INITIAL_STATE)) {
-        if (char === '[') {
+        if (char === ' ' || char === '\n' || char === '\t') {
+          continue
+        }
+
+        else if (char === '[') {
           this.addToken(new Token(TOKEN_NAMES.openBracket, char))
         }
 
