@@ -101,5 +101,20 @@ describe('Given a Lexer', () => {
       const expectedMessage = "[5:21] Lexical error: unexpected 'l'"
       expect(lexer.getErrors()[0]).toEqual(expectedMessage)
     })
+
+    it('(panic mode) should identify the unexpected chars', () => {
+      const expectedMessages = [
+        "[5:21] Lexical error: unexpected 'l'",
+        "[5:22] Lexical error: unexpected '@'"
+      ]
+
+      expect(lexer.getErrors()[0]).toEqual(expectedMessages[0])
+      expect(lexer.getErrors()[1]).toEqual(expectedMessages[1])
+    })
+
+    it('(panic mode) should build the correct lexem', () => {
+      const tokens = lexer.getTokens()
+      expect(tokens[14].toString()).toEqual(`<${TOKEN_NAMES.CONST_DBL}, 8.2>`)
+    })
   })
 })

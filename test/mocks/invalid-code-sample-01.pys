@@ -2,6 +2,6 @@
 
 class InvalidCodeSample01:
   defstatic void main(String args):
-    double age = 8.l
+    double age = 8.l@2
   end;
 end.
