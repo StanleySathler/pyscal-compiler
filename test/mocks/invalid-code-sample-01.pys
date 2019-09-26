@@ -1,0 +1,7 @@
+# Invalid code with several lexical errors
+
+class InvalidCodeSample01:
+  defstatic void main(String args):
+    double age = 8.l
+  end;
+end.

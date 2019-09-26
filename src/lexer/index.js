@@ -17,16 +17,19 @@ module.exports = class Lexer {
     this.__state = INITIAL_STATE
 
     /* Current line */
-    this.__line = 0
+    this.__line = 1
 
     /* Current column */
-    this.__column = 0
+    this.__column = 1
 
     /* Current lexem */
     this.__lexem = ''
 
     /* Found tokens */
     this.__tokens = []
+
+    /* Error messages */
+    this.__errors = []
   }
 
   /**
@@ -133,6 +136,10 @@ module.exports = class Lexer {
           this.appendToLexem(char)
           this.setState(4)
         }
+
+        else {
+          this.addError(`Lexical error: unexpected '${char}'`)
+        }
       }
 
       /* State: 4 */
@@ -147,7 +154,7 @@ module.exports = class Lexer {
           this.addToken(token)
           this.resetLexem()
           this.resetState()
-          this.getFileReader().setCursorToPreviousPosition()
+          this.backCursor()
 
           if (!this.getSymbolTable().has(lexem)) {
             this.getSymbolTable().set(lexem, token)
@@ -165,7 +172,7 @@ module.exports = class Lexer {
         else {
           this.addToken(new Token(TOKEN_NAMES.lessThan, '<'))
           this.resetState()
-          this.getFileReader().setCursorToPreviousPosition()
+          this.backCursor()
         }
       }
 
@@ -179,7 +186,7 @@ module.exports = class Lexer {
         else {
           this.addToken(new Token(TOKEN_NAMES.OP_GT, '>'))
           this.resetState()
-          this.getFileReader().setCursorToPreviousPosition()
+          this.backCursor()
         }
       }
 
@@ -193,7 +200,7 @@ module.exports = class Lexer {
         else {
           this.addToken(new Token(TOKEN_NAMES.OP_ASG, '='))
           this.resetState()
-          this.getFileReader().setCursorToPreviousPosition()
+          this.backCursor()
         }
       }
 
@@ -207,7 +214,7 @@ module.exports = class Lexer {
         else {
           this.addToken(new Token(TOKEN_NAMES.OP_NGT, '!'))
           this.resetState()
-          this.getFileReader().setCursorToPreviousPosition()
+          this.backCursor()
         }
       }
 
@@ -227,7 +234,7 @@ module.exports = class Lexer {
           this.addToken(new Token('CONST_INT', this.getLexem()))
           this.resetLexem()
           this.resetState()
-          this.getFileReader().setCursorToPreviousPosition()
+          this.backCursor()
         }
       }
 
@@ -239,7 +246,7 @@ module.exports = class Lexer {
         }
 
         else {
-          // Should throw lexical error
+          this.addError(`Lexical error: unexpected '${char}'`)
         }
       }
 
@@ -253,7 +260,7 @@ module.exports = class Lexer {
           this.addToken(new Token(TOKEN_NAMES.CONST_DBL, this.getLexem()))
           this.resetLexem()
           this.resetState()
-          this.getFileReader().setCursorToPreviousPosition()
+          this.backCursor()
         }
       }
 
@@ -277,6 +284,14 @@ module.exports = class Lexer {
         }
       }
     }
+  }
+
+  /**
+   * Back the cursor to one position behind.
+   */
+  backCursor() {
+    this.getFileReader().setCursorToPreviousPosition()
+    this.decrementColumn()
   }
 
   /**
@@ -333,10 +348,17 @@ module.exports = class Lexer {
   }
 
   /**
+   * Decrement the current column.
+   */
+  decrementColumn() {
+    this.__column--
+  }
+
+  /**
    * Reset the current column to 0.
    */
   resetColumn() {
-    this.__column = 0
+    this.__column = 1
   }
 
   /**
@@ -376,6 +398,26 @@ module.exports = class Lexer {
    */
   getTokens() {
     return this.__tokens
+  }
+
+  /**
+   * Add an error message.
+   *
+   * @param {*} error The error message
+   */
+  addError(error) {
+    const line = this.getLine()
+    const column = this.getColumn()
+    const message = `[${line}:${column}] ${error}`
+
+    this.__errors.push(message)
+  }
+
+  /**
+   * Get the registered errors.
+   */
+  getErrors() {
+    return this.__errors
   }
 
   /**

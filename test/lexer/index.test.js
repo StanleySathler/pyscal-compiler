@@ -5,7 +5,7 @@ const Token = require('../../src/token')
 const TOKEN_NAMES = require('../../src/token/names')
 
 describe('Given a Lexer', () => {
-  describe('and it reads a code sample', () => {
+  describe('and it reads a valid code sample', () => {
     let filePath, fileReader, lexer
 
     beforeEach(() => {
@@ -83,7 +83,23 @@ describe('Given a Lexer', () => {
     })
 
     it('should correctly count the lines', () => {
-      expect(lexer.getLine()).toEqual(12)
+      expect(lexer.getLine()).toEqual(13)
+    })
+  })
+
+  describe('and it reads an invalid code sample', () => {
+    let filePath, fileReader, lexer
+
+    beforeEach(() => {
+      filePath = path.resolve(__dirname, '../mocks/invalid-code-sample-01.pys')
+      fileReader = new FileReader(filePath)
+      lexer = new Lexer(fileReader)
+      lexer.run()
+    })
+
+    it('should catch the first lexical error', () => {
+      const expectedMessage = "[5:21] Lexical error: unexpected 'l'"
+      expect(lexer.getErrors()[0]).toEqual(expectedMessage)
     })
   })
 })
