@@ -1,5 +1,7 @@
 {
+  "license": "MIT",
   "scripts": {
+    "start": "node index.js",
     "test": "jest"
   },
   "devDependencies": {
