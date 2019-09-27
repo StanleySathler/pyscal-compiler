@@ -4,13 +4,28 @@ Pyscal is a basic programming language, built for learning purposes. Its main go
 
 ## Running the compiler
 
-Currently the compiler is not accepting source files through the command line. It always reads from a static file path (`test/mocks/code-sample-01.pys`). In case you want to change it to read a different file, you can change it [here](https://github.com/StanleySathler/pyscal-compiler/blob/master/src/index.js#L6).
+It was built for [NodeJS v10.16.0](https://nodejs.org/en/download/) or higher. Once you install NodeJS, [npm 6.10.1](https://www.npmjs.com/) should be automatically installed as well.
 
-It was built for [NodeJS v10.16.0](https://nodejs.org/en/download/) or higher.
-
-To run it, all you have to do is type the following commands:
+To run any command below, make sure you are under the project's root directory:
 
 ```sh
 $ cd path/to/pyscal-compiler
-$ node src/index.js
+```
+
+### Instaling the dependencies
+
+For a better printing on the terminal, the compiler uses a few 3rd-party packages. You need to install them.
+
+```sh
+$ npm install
+```
+
+This command installs any dependencies required by the compiler.
+
+### Running the program
+
+Once all dependencies are installed, all you have to do is type the following commands:
+
+```sh
+$ npm start path/to/your/source/file.pys
 ```
