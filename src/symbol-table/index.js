@@ -62,4 +62,11 @@ module.exports = class SymbolTable {
   has(lexem) {
     return (this.__symbols[lexem] !== undefined)
   }
+
+  /**
+   * Get all symbols.
+   */
+  getSymbols() {
+    return this.__symbols
+  }
 }
