@@ -40,31 +40,29 @@ module.exports = class Lexer {
 
     while (this.getFileReader().hasNextChar()) {
       char = this.getFileReader().readNextChar()
-
-      /* Control the current line and column */
-      if (char === '\n') {
-        this.incrementLine()
-        this.resetColumn()
-      } else {
-        this.incrementColumn()
-      }
+      this.incrementColumn()
 
       /* State: initial */
       if (this.isState(INITIAL_STATE)) {
-        if (char === ' ' || char === '\n' || char === '\t') {
+        if (char === ' ' || char === '\t')
+          continue
+
+        else if (char === '\n') {
+          this.incrementLine()
+          this.resetColumn()
           continue
         }
 
         else if (char === '[') {
-          this.addToken(new Token(TOKEN_NAMES.openBracket, char))
+          this.addToken(TOKEN_NAMES.openBracket, '[')
         }
 
         else if (char === ']') {
-          this.addToken(new Token(TOKEN_NAMES.closeBracket, char))
+          this.addToken(TOKEN_NAMES.closeBracket, ']')
         }
 
         else if (char === '.') {
-          this.addToken(new Token(TOKEN_NAMES.dot, char))
+          this.addToken(TOKEN_NAMES.dot, '.')
         }
 
         else if (char === '<') {
@@ -84,39 +82,39 @@ module.exports = class Lexer {
         }
 
         else if (char === '/') {
-          this.addToken(new Token('OP_DIV', '/'))
+          this.addToken('OP_DIV', '/')
         }
 
         else if (char === '*') {
-          this.addToken(new Token('OP_MULT', '*'))
+          this.addToken('OP_MULT', '*')
         }
 
         else if (char === '-') {
-          this.addToken(new Token('OP_SUB', '-'))
+          this.addToken('OP_SUB', '-')
         }
 
         else if (char === '+') {
-          this.addToken(new Token('OP_SUM', '+'))
+          this.addToken('OP_SUM', '+')
         }
 
         else if (char === '(') {
-          this.addToken(new Token(TOKEN_NAMES.openRoundBrackets, char))
+          this.addToken(TOKEN_NAMES.openRoundBrackets, '(')
         }
 
         else if (char === ')') {
-          this.addToken(new Token(TOKEN_NAMES.closeRoundBrackets, char))
+          this.addToken(TOKEN_NAMES.closeRoundBrackets, ')')
         }
 
         else if (char === ',') {
-          this.addToken(new Token('COMMA', ','))
+          this.addToken('COMMA', ',')
         }
 
         else if (char === ';') {
-          this.addToken(new Token('SEMI_COLLON', ';'))
+          this.addToken('SEMI_COLLON', ';')
         }
 
         else if (char === ':') {
-          this.addToken(new Token('COLLON', ':'))
+          this.addToken('COLLON', ':')
         }
 
         else if (char === '"') {
@@ -150,11 +148,10 @@ module.exports = class Lexer {
 
         else {
           const lexem = this.getLexem()
-          const token = new Token(TOKEN_NAMES.id, lexem)
-          this.addToken(token)
           this.resetLexem()
           this.resetState()
           this.backCursor()
+          const token = this.addToken(TOKEN_NAMES.id, lexem)
 
           if (!this.getSymbolTable().has(lexem)) {
             this.getSymbolTable().set(lexem, token)
@@ -165,56 +162,56 @@ module.exports = class Lexer {
       /* State: 6 */
       else if (this.isState(6)) {
         if (char === '=') {
-          this.addToken(new Token(TOKEN_NAMES.lessThanOrEqual, '<='))
           this.resetState()
+          this.addToken(TOKEN_NAMES.lessThanOrEqual, '<=')
         }
 
         else {
-          this.addToken(new Token(TOKEN_NAMES.lessThan, '<'))
           this.resetState()
           this.backCursor()
+          this.addToken(TOKEN_NAMES.lessThan, '<')
         }
       }
 
       /* State: 9 */
       else if (this.isState(9)) {
         if (char === '=') {
-          this.addToken(new Token(TOKEN_NAMES.OP_GE, '>='))
           this.resetState()
+          this.addToken(TOKEN_NAMES.OP_GE, '>=')
         }
 
         else {
-          this.addToken(new Token(TOKEN_NAMES.OP_GT, '>'))
           this.resetState()
           this.backCursor()
+          this.addToken(TOKEN_NAMES.OP_GT, '>')
         }
       }
 
       /* State: 12 */
       else if (this.isState(12)) {
         if (char === '=') {
-          this.addToken(new Token(TOKEN_NAMES.OP_EQ, '=='))
           this.resetState()
+          this.addToken(TOKEN_NAMES.OP_EQ, '==')
         }
 
         else {
-          this.addToken(new Token(TOKEN_NAMES.OP_ASG, '='))
           this.resetState()
           this.backCursor()
+          this.addToken(TOKEN_NAMES.OP_ASG, '=')
         }
       }
 
       /* State: 14 */
       else if (this.isState(14)) {
         if (char === '=') {
-          this.addToken(new Token(TOKEN_NAMES.OP_NE, '!='))
           this.resetState()
+          this.addToken(TOKEN_NAMES.OP_NE, '!=')
         }
 
         else {
-          this.addToken(new Token(TOKEN_NAMES.OP_NGT, '!'))
           this.resetState()
           this.backCursor()
+          this.addToken(TOKEN_NAMES.OP_NGT, '!')
         }
       }
 
@@ -231,10 +228,11 @@ module.exports = class Lexer {
         }
 
         else {
-          this.addToken(new Token('CONST_INT', this.getLexem()))
-          this.resetLexem()
+          const lexem = this.getLexem()
           this.resetState()
           this.backCursor()
+          this.addToken('CONST_INT', lexem)
+          this.resetLexem()
         }
       }
 
@@ -257,19 +255,21 @@ module.exports = class Lexer {
         }
 
         else {
-          this.addToken(new Token(TOKEN_NAMES.CONST_DBL, this.getLexem()))
-          this.resetLexem()
+          const lexem = this.getLexem()
           this.resetState()
           this.backCursor()
+          this.addToken(TOKEN_NAMES.CONST_DBL, lexem)
+          this.resetLexem()
         }
       }
 
       /* State: 32 */
       else if (this.isState(32)) {
         if (char === '"') {
-          this.addToken(new Token(TOKEN_NAMES.CONST_STR, this.getLexem()))
-          this.resetLexem()
+          const lexem = this.getLexem()
           this.resetState()
+          this.addToken(TOKEN_NAMES.CONST_STR, lexem)
+          this.resetLexem()
         }
 
         else {
@@ -282,6 +282,15 @@ module.exports = class Lexer {
         if (char === '\n') {
           this.resetState()
         }
+      }
+
+      else {
+        this.addError(`Lexical error: unexpected '${char}'`)
+      }
+
+      if (char === '\n') {
+        this.incrementLine()
+        this.resetColumn()
       }
     }
   }
@@ -388,9 +397,12 @@ module.exports = class Lexer {
    * Push a new token into the tokens list.
    *
    * @param {*} token the token that must be added
+   * @returns {Token} the generated token
    */
-  addToken(token) {
+  addToken(name, lexem) {
+    const token = new Token(name, lexem, this.getLine(), this.getColumn())
     this.__tokens.push(token)
+    return token
   }
 
   /**
