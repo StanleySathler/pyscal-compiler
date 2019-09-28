@@ -54,15 +54,15 @@ module.exports = class Lexer {
         }
 
         else if (char === '[') {
-          this.addToken(TOKEN_NAMES.openBracket, '[')
+          this.addToken(TOKEN_NAMES.OPN_BRACKET, '[')
         }
 
         else if (char === ']') {
-          this.addToken(TOKEN_NAMES.closeBracket, ']')
+          this.addToken(TOKEN_NAMES.CLS_BRACKET, ']')
         }
 
         else if (char === '.') {
-          this.addToken(TOKEN_NAMES.dot, '.')
+          this.addToken(TOKEN_NAMES.DOT, '.')
         }
 
         else if (char === '<') {
@@ -98,11 +98,11 @@ module.exports = class Lexer {
         }
 
         else if (char === '(') {
-          this.addToken(TOKEN_NAMES.openRoundBrackets, '(')
+          this.addToken(TOKEN_NAMES.OPN_RND_BRACKET, '(')
         }
 
         else if (char === ')') {
-          this.addToken(TOKEN_NAMES.closeRoundBrackets, ')')
+          this.addToken(TOKEN_NAMES.CLS_RND_BRACKET, ')')
         }
 
         else if (char === ',') {
@@ -110,11 +110,11 @@ module.exports = class Lexer {
         }
 
         else if (char === ';') {
-          this.addToken('SEMI_COLLON', ';')
+          this.addToken('SEMI_COLON', ';')
         }
 
         else if (char === ':') {
-          this.addToken('COLLON', ':')
+          this.addToken('COLON', ':')
         }
 
         else if (char === '"') {
@@ -151,7 +151,7 @@ module.exports = class Lexer {
           this.resetLexem()
           this.resetState()
           this.backCursor()
-          const token = this.addToken(TOKEN_NAMES.id, lexem)
+          const token = this.addToken(TOKEN_NAMES.ID, lexem)
 
           if (!this.getSymbolTable().has(lexem)) {
             this.getSymbolTable().set(lexem, token)
@@ -163,13 +163,13 @@ module.exports = class Lexer {
       else if (this.isState(6)) {
         if (char === '=') {
           this.resetState()
-          this.addToken(TOKEN_NAMES.lessThanOrEqual, '<=')
+          this.addToken(TOKEN_NAMES.OP_LTE, '<=')
         }
 
         else {
           this.resetState()
           this.backCursor()
-          this.addToken(TOKEN_NAMES.lessThan, '<')
+          this.addToken(TOKEN_NAMES.OP_LT, '<')
         }
       }
 
@@ -294,7 +294,7 @@ module.exports = class Lexer {
       }
     }
 
-    this.addToken('EOF', 'EOF')
+    this.addToken(TOKEN_NAMES.EOF, 'EOF')
   }
 
   /**

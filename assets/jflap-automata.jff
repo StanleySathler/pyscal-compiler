@@ -138,7 +138,7 @@
 		<state id="24" name="q24">
 			<x>846.0</x>
 			<y>144.0</y>
-			<label>(SEMI_COLLON, ;)</label>
+			<label>(SEMI_COLON, ;)</label>
 			<final/>
 		</state>
 		<state id="25" name="q25">
@@ -150,7 +150,7 @@
 		<state id="26" name="q26">
 			<x>758.0</x>
 			<y>342.0</y>
-			<label>(COLLON, :)</label>
+			<label>(COLON, :)</label>
 			<final/>
 		</state>
 		<state id="27" name="q27">
@@ -403,8 +403,8 @@
 			<read>other</read>
 		</transition>
 		<note>
-			<text>Whenever you read an "other", you 
-must return the current cursor by 
+			<text>Whenever you read an "other", you
+must return the current cursor by
 one char.</text>
 			<x>561.0</x>
 			<y>109.0</y>

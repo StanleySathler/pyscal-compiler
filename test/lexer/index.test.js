@@ -18,49 +18,51 @@ describe('Given a Lexer', () => {
     it('should generate the correct tokens', () => {
       const actual = lexer.getTokens()
       const expected = [
-        new Token(TOKEN_NAMES.id, 'class', 4, 6),
-        new Token(TOKEN_NAMES.id, 'CodeSample01', 4, 19),
-        new Token(TOKEN_NAMES.collon, ':', 4, 20),
+        new Token(TOKEN_NAMES.ID, 'class', 4, 6),
+        new Token(TOKEN_NAMES.ID, 'CodeSample01', 4, 19),
+        new Token(TOKEN_NAMES.COLON, ':', 4, 20),
 
-        new Token(TOKEN_NAMES.id, 'defstatic', 5, 12),
-        new Token(TOKEN_NAMES.id, 'void', 5, 17),
-        new Token(TOKEN_NAMES.id, 'main', 5, 22),
-        new Token(TOKEN_NAMES.openRoundBrackets, '(', 5, 23),
-        new Token(TOKEN_NAMES.id, 'String', 5, 29),
-        new Token(TOKEN_NAMES.openBracket, '[', 5, 30),
-        new Token(TOKEN_NAMES.closeBracket, ']', 5, 31),
-        new Token(TOKEN_NAMES.id, 'args', 5, 36),
-        new Token(TOKEN_NAMES.closeRoundBrackets, ')', 5, 37),
-        new Token(TOKEN_NAMES.collon, ':', 5, 38),
+        new Token(TOKEN_NAMES.ID, 'defstatic', 5, 12),
+        new Token(TOKEN_NAMES.ID, 'void', 5, 17),
+        new Token(TOKEN_NAMES.ID, 'main', 5, 22),
+        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 5, 23),
+        new Token(TOKEN_NAMES.ID, 'String', 5, 29),
+        new Token(TOKEN_NAMES.OPN_BRACKET, '[', 5, 30),
+        new Token(TOKEN_NAMES.CLS_BRACKET, ']', 5, 31),
+        new Token(TOKEN_NAMES.ID, 'args', 5, 36),
+        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 5, 37),
+        new Token(TOKEN_NAMES.COLON, ':', 5, 38),
 
-        new Token(TOKEN_NAMES.id, 'double', 6, 11),
-        new Token(TOKEN_NAMES.id, 'age', 6, 15),
-        new Token(TOKEN_NAMES.semiCollon, ';', 6, 16),
+        new Token(TOKEN_NAMES.ID, 'double', 6, 11),
+        new Token(TOKEN_NAMES.ID, 'age', 6, 15),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 6, 16),
 
-        new Token(TOKEN_NAMES.id, 'if', 8, 7),
-        new Token(TOKEN_NAMES.openRoundBrackets, '(', 8, 9),
-        new Token(TOKEN_NAMES.id, 'age', 8, 12),
+        new Token(TOKEN_NAMES.ID, 'if', 8, 7),
+        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 8, 9),
+        new Token(TOKEN_NAMES.ID, 'age', 8, 12),
         new Token(TOKEN_NAMES.OP_EQ, '==', 8, 15),
         new Token(TOKEN_NAMES.CONST_DBL, '8.8', 8, 19),
-        new Token(TOKEN_NAMES.closeRoundBrackets, ')', 8, 20),
-        new Token(TOKEN_NAMES.collon, ':', 8, 21),
+        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 8, 20),
+        new Token(TOKEN_NAMES.COLON, ':', 8, 21),
 
-        new Token(TOKEN_NAMES.id, 'hello', 9, 12),
-        new Token(TOKEN_NAMES.openRoundBrackets, '(', 9, 13),
+        new Token(TOKEN_NAMES.ID, 'hello', 9, 12),
+        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 9, 13),
         new Token(TOKEN_NAMES.CONST_STR, 'Compiler', 9, 23),
         new Token(TOKEN_NAMES.COMMA, ',', 9, 24),
-        new Token(TOKEN_NAMES.id, 'age', 9, 28),
-        new Token(TOKEN_NAMES.closeRoundBrackets, ')', 9, 29),
-        new Token(TOKEN_NAMES.semiCollon, ';', 9, 30),
+        new Token(TOKEN_NAMES.ID, 'age', 9, 28),
+        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 9, 29),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 9, 30),
 
-        new Token(TOKEN_NAMES.id, 'end', 10, 8),
-        new Token(TOKEN_NAMES.semiCollon, ';', 10, 9),
+        new Token(TOKEN_NAMES.ID, 'end', 10, 8),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 10, 9),
 
-        new Token(TOKEN_NAMES.id, 'end', 11, 6),
-        new Token(TOKEN_NAMES.semiCollon, ';', 11, 7),
+        new Token(TOKEN_NAMES.ID, 'end', 11, 6),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 11, 7),
 
-        new Token(TOKEN_NAMES.id, 'end', 12, 4),
-        new Token(TOKEN_NAMES.dot, '.', 12, 5),
+        new Token(TOKEN_NAMES.ID, 'end', 12, 4),
+        new Token(TOKEN_NAMES.DOT, '.', 12, 5),
+
+        new Token(TOKEN_NAMES.EOF, 'EOF', 13, 1)
       ]
 
       expect(actual).toEqual(expected)
