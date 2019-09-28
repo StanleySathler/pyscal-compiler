@@ -418,6 +418,9 @@ module.exports = class Lexer {
    * @param {*} error The error message
    */
   addError(error) {
+    if (this.__errors.length === 5)
+      throw new Error('Maximum error limit reached!')
+
     const line = this.getLine()
     const column = this.getColumn()
     const message = `[${line}:${column}] ${error}`
