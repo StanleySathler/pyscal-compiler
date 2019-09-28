@@ -12,7 +12,7 @@ To run any command below, make sure you are under the project's root directory:
 $ cd path/to/pyscal-compiler
 ```
 
-### Instaling the dependencies
+### Installing the dependencies
 
 For a better printing on the terminal, the compiler uses a few 3rd-party packages. You need to install them.
 
