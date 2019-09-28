@@ -293,6 +293,8 @@ module.exports = class Lexer {
         this.resetColumn()
       }
     }
+
+    this.addToken('EOF', 'EOF')
   }
 
   /**
