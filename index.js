@@ -35,7 +35,7 @@ Object.keys(symbols).forEach(symbolLexem => {
 
 /* Build the errors table */
 
-if (lexer.getErrors.length) {
+if (lexer.getErrors().length) {
   lexer.getErrors().map(error => {
     errorsLogger.push(error)
   })
