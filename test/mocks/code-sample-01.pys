@@ -4,6 +4,7 @@
 class CodeSample01:
   defstatic void main(String[] args):
     double age;
+    double points = -4;
 
     if (age == 8.8):
       hello("Compiler", age);

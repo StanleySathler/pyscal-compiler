@@ -90,7 +90,18 @@ module.exports = class Lexer {
         }
 
         else if (char === '-') {
-          return this.addToken('OP_SUB', '-')
+          const lastTokenName = this.lastToken().getName()
+
+          if (
+            lastTokenName === TOKEN_NAMES.CONST_INT ||
+            lastTokenName === TOKEN_NAMES.CONST_DBL ||
+            lastTokenName === TOKEN_NAMES.ID ||
+            lastTokenName === TOKEN_NAMES.CLS_RND_BRACKET
+          ) {
+            return this.addToken('OP_SUB', '-')
+          }
+
+          return this.addToken(TOKEN_NAMES.OP_NGT, '-')
         }
 
         else if (char === '+') {
@@ -419,6 +430,13 @@ module.exports = class Lexer {
    */
   getTokens() {
     return this.__tokens
+  }
+
+  /**
+   * Get the last token.
+   */
+  lastToken() {
+    return this.__tokens[this.__tokens.length - 1]
   }
 
   /**

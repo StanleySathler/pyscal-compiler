@@ -45,6 +45,9 @@ module.exports = {
   /* Not equal: '!=' */
   OP_NE: 'OP_NE',
 
+  /* Negative minus: '-' */
+  OP_NGT: 'OP_NGT',
+
   /* Negation: '!' */
   OP_NOT: 'OP_NOT',
 

@@ -41,32 +41,39 @@ describe('Given a Lexer', () => {
         new Token(TOKEN_NAMES.ID, 'age', 6, 15),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 6, 16),
 
-        new Token(TOKEN_NAMES.ID, 'if', 8, 7),
-        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 8, 9),
-        new Token(TOKEN_NAMES.ID, 'age', 8, 12),
-        new Token(TOKEN_NAMES.OP_EQ, '==', 8, 15),
-        new Token(TOKEN_NAMES.CONST_DBL, '8.8', 8, 19),
-        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 8, 20),
-        new Token(TOKEN_NAMES.COLON, ':', 8, 21),
+        new Token(TOKEN_NAMES.ID, 'double', 7, 11),
+        new Token(TOKEN_NAMES.ID, 'points', 7, 18),
+        new Token(TOKEN_NAMES.OP_ASG, '=', 7, 20),
+        new Token(TOKEN_NAMES.OP_NGT, '-', 7, 22),
+        new Token(TOKEN_NAMES.CONST_INT, '4', 7, 23),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 7, 24),
 
-        new Token(TOKEN_NAMES.ID, 'hello', 9, 12),
-        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 9, 13),
-        new Token(TOKEN_NAMES.CONST_STR, 'Compiler', 9, 23),
-        new Token(TOKEN_NAMES.COMMA, ',', 9, 24),
-        new Token(TOKEN_NAMES.ID, 'age', 9, 28),
-        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 9, 29),
-        new Token(TOKEN_NAMES.SEMI_COLON, ';', 9, 30),
+        new Token(TOKEN_NAMES.ID, 'if', 9, 7),
+        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 9, 9),
+        new Token(TOKEN_NAMES.ID, 'age', 9, 12),
+        new Token(TOKEN_NAMES.OP_EQ, '==', 9, 15),
+        new Token(TOKEN_NAMES.CONST_DBL, '8.8', 9, 19),
+        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 9, 20),
+        new Token(TOKEN_NAMES.COLON, ':', 9, 21),
 
-        new Token(TOKEN_NAMES.ID, 'end', 10, 8),
-        new Token(TOKEN_NAMES.SEMI_COLON, ';', 10, 9),
+        new Token(TOKEN_NAMES.ID, 'hello', 10, 12),
+        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 10, 13),
+        new Token(TOKEN_NAMES.CONST_STR, 'Compiler', 10, 23),
+        new Token(TOKEN_NAMES.COMMA, ',', 10, 24),
+        new Token(TOKEN_NAMES.ID, 'age', 10, 28),
+        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 10, 29),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 10, 30),
 
-        new Token(TOKEN_NAMES.ID, 'end', 11, 6),
-        new Token(TOKEN_NAMES.SEMI_COLON, ';', 11, 7),
+        new Token(TOKEN_NAMES.ID, 'end', 11, 8),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 11, 9),
 
-        new Token(TOKEN_NAMES.ID, 'end', 12, 4),
-        new Token(TOKEN_NAMES.DOT, '.', 12, 5),
+        new Token(TOKEN_NAMES.ID, 'end', 12, 6),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 12, 7),
 
-        new Token(TOKEN_NAMES.EOF, 'EOF', 13, 1)
+        new Token(TOKEN_NAMES.ID, 'end', 13, 4),
+        new Token(TOKEN_NAMES.DOT, '.', 13, 5),
+
+        new Token(TOKEN_NAMES.EOF, 'EOF', 14, 1)
       ]
 
       expect(tokens).toEqual(expected)
@@ -84,12 +91,12 @@ describe('Given a Lexer', () => {
       expect(tableSymbol.get('double').toString()).toEqual('<KW_DOUBLE, double, 0, 0>')
       expect(tableSymbol.get('age').toString()).toEqual('<ID, age, 6, 15>')
       expect(tableSymbol.get('if').toString()).toEqual('<KW_IF, if, 0, 0>')
-      expect(tableSymbol.get('hello').toString()).toEqual('<ID, hello, 9, 12>')
+      expect(tableSymbol.get('hello').toString()).toEqual('<ID, hello, 10, 12>')
       expect(tableSymbol.get('end').toString()).toEqual('<KW_END, end, 0, 0>')
     })
 
     it('should correctly count the lines', () => {
-      expect(lexer.getLine()).toEqual(13)
+      expect(lexer.getLine()).toEqual(14)
     })
   })
 
