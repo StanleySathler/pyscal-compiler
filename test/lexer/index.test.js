@@ -6,17 +6,21 @@ const TOKEN_NAMES = require('../../src/token/names')
 
 describe('Given a Lexer', () => {
   describe('and it reads a valid code sample', () => {
-    let filePath, fileReader, lexer
+    let filePath
+    let fileReader
+    let lexer
+    const tokens = []
 
     beforeEach(() => {
       filePath = path.resolve(__dirname, '../mocks/code-sample-01.pys')
       fileReader = new FileReader(filePath)
       lexer = new Lexer(fileReader)
-      lexer.run()
+
+      while (lexer.getFileReader().hasNextChar())
+        tokens.push(lexer.nextToken())
     })
 
     it('should generate the correct tokens', () => {
-      const actual = lexer.getTokens()
       const expected = [
         new Token(TOKEN_NAMES.ID, 'class', 4, 6),
         new Token(TOKEN_NAMES.ID, 'CodeSample01', 4, 19),
@@ -65,7 +69,7 @@ describe('Given a Lexer', () => {
         new Token(TOKEN_NAMES.EOF, 'EOF', 13, 1)
       ]
 
-      expect(actual).toEqual(expected)
+      expect(tokens).toEqual(expected)
     })
 
     it('should add the identifiers to the symbol table', () => {
@@ -90,13 +94,18 @@ describe('Given a Lexer', () => {
   })
 
   describe('and it reads an invalid code sample', () => {
-    let filePath, fileReader, lexer
+    let filePath
+    let fileReader
+    let lexer
+    const tokens = []
 
     beforeEach(() => {
       filePath = path.resolve(__dirname, '../mocks/invalid-code-sample-01.pys')
       fileReader = new FileReader(filePath)
       lexer = new Lexer(fileReader)
-      lexer.run()
+
+      while (lexer.getFileReader().hasNextChar())
+        tokens.push(lexer.nextToken())
     })
 
     it('should catch the first lexical error', () => {
@@ -115,7 +124,6 @@ describe('Given a Lexer', () => {
     })
 
     it('(panic mode) should build the correct lexem', () => {
-      const tokens = lexer.getTokens()
       expect(tokens[14].toString()).toEqual(`<${TOKEN_NAMES.CONST_DBL}, 8.2, 5, 23>`)
     })
   })
