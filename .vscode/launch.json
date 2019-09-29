@@ -8,7 +8,8 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/src/index.js"
+      "program": "${workspaceFolder}/index.js",
+      "args": ["./test/mocks/code-sample-01.pys"]
     }
   ]
 }
