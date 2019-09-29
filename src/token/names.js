@@ -46,7 +46,7 @@ module.exports = {
   OP_NE: 'OP_NE',
 
   /* Negation: '!' */
-  OP_NGT: 'OP_NGT',
+  OP_NOT: 'OP_NOT',
 
   /* Comma: ',' */
   COMMA: 'COMMA',

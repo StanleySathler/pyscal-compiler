@@ -214,7 +214,7 @@ module.exports = class Lexer {
         else {
           this.resetState()
           this.backCursor()
-          return this.addToken(TOKEN_NAMES.OP_NGT, '!')
+          return this.addToken(TOKEN_NAMES.OP_NOT, '!')
         }
       }
 

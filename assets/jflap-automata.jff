@@ -114,7 +114,7 @@
 		<state id="20" name="q20">
 			<x>893.0</x>
 			<y>694.0</y>
-			<label>(OP_NEGT, !); goBack</label>
+			<label>(OP_NOT, !); goBack</label>
 			<final/>
 		</state>
 		<state id="21" name="q21">
