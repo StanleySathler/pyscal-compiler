@@ -33,9 +33,9 @@ module.exports = class Lexer {
   }
 
   /**
-   * Run the Lexer phase.
+   * Get the next token.
    */
-  run() {
+  nextToken() {
     let char = ''
 
     while (this.getFileReader().hasNextChar()) {
@@ -54,15 +54,15 @@ module.exports = class Lexer {
         }
 
         else if (char === '[') {
-          this.addToken(TOKEN_NAMES.OPN_BRACKET, '[')
+          return this.addToken(TOKEN_NAMES.OPN_BRACKET, '[')
         }
 
         else if (char === ']') {
-          this.addToken(TOKEN_NAMES.CLS_BRACKET, ']')
+          return this.addToken(TOKEN_NAMES.CLS_BRACKET, ']')
         }
 
         else if (char === '.') {
-          this.addToken(TOKEN_NAMES.DOT, '.')
+          return this.addToken(TOKEN_NAMES.DOT, '.')
         }
 
         else if (char === '<') {
@@ -82,39 +82,39 @@ module.exports = class Lexer {
         }
 
         else if (char === '/') {
-          this.addToken('OP_DIV', '/')
+          return this.addToken('OP_DIV', '/')
         }
 
         else if (char === '*') {
-          this.addToken('OP_MULT', '*')
+          return this.addToken('OP_MULT', '*')
         }
 
         else if (char === '-') {
-          this.addToken('OP_SUB', '-')
+          return this.addToken('OP_SUB', '-')
         }
 
         else if (char === '+') {
-          this.addToken('OP_SUM', '+')
+          return this.addToken('OP_SUM', '+')
         }
 
         else if (char === '(') {
-          this.addToken(TOKEN_NAMES.OPN_RND_BRACKET, '(')
+          return this.addToken(TOKEN_NAMES.OPN_RND_BRACKET, '(')
         }
 
         else if (char === ')') {
-          this.addToken(TOKEN_NAMES.CLS_RND_BRACKET, ')')
+          return this.addToken(TOKEN_NAMES.CLS_RND_BRACKET, ')')
         }
 
         else if (char === ',') {
-          this.addToken('COMMA', ',')
+          return this.addToken('COMMA', ',')
         }
 
         else if (char === ';') {
-          this.addToken('SEMI_COLON', ';')
+          return this.addToken('SEMI_COLON', ';')
         }
 
         else if (char === ':') {
-          this.addToken('COLON', ':')
+          return this.addToken('COLON', ':')
         }
 
         else if (char === '"') {
@@ -153,9 +153,12 @@ module.exports = class Lexer {
           this.backCursor()
           const token = this.addToken(TOKEN_NAMES.ID, lexem)
 
+          /* Not added to the Symbol Table yet */
           if (!this.getSymbolTable().has(lexem)) {
             this.getSymbolTable().set(lexem, token)
           }
+
+          return token
         }
       }
 
@@ -163,13 +166,13 @@ module.exports = class Lexer {
       else if (this.isState(6)) {
         if (char === '=') {
           this.resetState()
-          this.addToken(TOKEN_NAMES.OP_LTE, '<=')
+          return this.addToken(TOKEN_NAMES.OP_LTE, '<=')
         }
 
         else {
           this.resetState()
           this.backCursor()
-          this.addToken(TOKEN_NAMES.OP_LT, '<')
+          return this.addToken(TOKEN_NAMES.OP_LT, '<')
         }
       }
 
@@ -177,13 +180,13 @@ module.exports = class Lexer {
       else if (this.isState(9)) {
         if (char === '=') {
           this.resetState()
-          this.addToken(TOKEN_NAMES.OP_GE, '>=')
+          return this.addToken(TOKEN_NAMES.OP_GE, '>=')
         }
 
         else {
           this.resetState()
           this.backCursor()
-          this.addToken(TOKEN_NAMES.OP_GT, '>')
+          return this.addToken(TOKEN_NAMES.OP_GT, '>')
         }
       }
 
@@ -191,13 +194,13 @@ module.exports = class Lexer {
       else if (this.isState(12)) {
         if (char === '=') {
           this.resetState()
-          this.addToken(TOKEN_NAMES.OP_EQ, '==')
+          return this.addToken(TOKEN_NAMES.OP_EQ, '==')
         }
 
         else {
           this.resetState()
           this.backCursor()
-          this.addToken(TOKEN_NAMES.OP_ASG, '=')
+          return this.addToken(TOKEN_NAMES.OP_ASG, '=')
         }
       }
 
@@ -205,13 +208,13 @@ module.exports = class Lexer {
       else if (this.isState(14)) {
         if (char === '=') {
           this.resetState()
-          this.addToken(TOKEN_NAMES.OP_NE, '!=')
+          return this.addToken(TOKEN_NAMES.OP_NE, '!=')
         }
 
         else {
           this.resetState()
           this.backCursor()
-          this.addToken(TOKEN_NAMES.OP_NGT, '!')
+          return this.addToken(TOKEN_NAMES.OP_NGT, '!')
         }
       }
 
@@ -231,8 +234,8 @@ module.exports = class Lexer {
           const lexem = this.getLexem()
           this.resetState()
           this.backCursor()
-          this.addToken('CONST_INT', lexem)
           this.resetLexem()
+          return this.addToken('CONST_INT', lexem)
         }
       }
 
@@ -258,8 +261,8 @@ module.exports = class Lexer {
           const lexem = this.getLexem()
           this.resetState()
           this.backCursor()
-          this.addToken(TOKEN_NAMES.CONST_DBL, lexem)
           this.resetLexem()
+          return this.addToken(TOKEN_NAMES.CONST_DBL, lexem)
         }
       }
 
@@ -268,8 +271,8 @@ module.exports = class Lexer {
         if (char === '"') {
           const lexem = this.getLexem()
           this.resetState()
-          this.addToken(TOKEN_NAMES.CONST_STR, lexem)
           this.resetLexem()
+          return this.addToken(TOKEN_NAMES.CONST_STR, lexem)
         }
 
         else {
@@ -294,7 +297,7 @@ module.exports = class Lexer {
       }
     }
 
-    this.addToken(TOKEN_NAMES.EOF, 'EOF')
+    return this.addToken(TOKEN_NAMES.EOF, 'EOF')
   }
 
   /**
