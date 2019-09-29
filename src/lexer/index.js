@@ -268,7 +268,11 @@ module.exports = class Lexer {
 
       /* State: 32 */
       else if (this.isState(32)) {
-        if (char === '"') {
+        if (char === '\n' || !this.getFileReader().hasNextChar()) {
+          this.addError(`Lexical error: string not properly closed`)
+        }
+
+        else if (char === '"') {
           const lexem = this.getLexem()
           this.resetState()
           this.resetLexem()
