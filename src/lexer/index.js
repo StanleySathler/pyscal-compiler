@@ -287,7 +287,10 @@ module.exports = class Lexer {
           const lexem = this.getLexem()
           this.resetState()
           this.resetLexem()
-          return this.addToken(TOKEN_NAMES.CONST_STR, lexem)
+
+          /* Empty strings shouldn't be considered tokens */
+          if (lexem.length)
+            return this.addToken(TOKEN_NAMES.CONST_STR, lexem)
         }
 
         else {

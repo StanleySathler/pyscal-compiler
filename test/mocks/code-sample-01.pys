@@ -8,6 +8,7 @@ class CodeSample01:
 
     if (age == 8.8):
       hello("Compiler", age);
+      hola("");
     end;
   end;
 end.

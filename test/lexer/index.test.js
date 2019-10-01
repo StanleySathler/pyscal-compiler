@@ -64,16 +64,21 @@ describe('Given a Lexer', () => {
         new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 10, 29),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 10, 30),
 
-        new Token(TOKEN_NAMES.ID, 'end', 11, 8),
-        new Token(TOKEN_NAMES.SEMI_COLON, ';', 11, 9),
+        new Token(TOKEN_NAMES.ID, 'hola', 11, 11),
+        new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 11, 12),
+        new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 11, 15),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 11, 16),
 
-        new Token(TOKEN_NAMES.ID, 'end', 12, 6),
-        new Token(TOKEN_NAMES.SEMI_COLON, ';', 12, 7),
+        new Token(TOKEN_NAMES.ID, 'end', 12, 8),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 12, 9),
 
-        new Token(TOKEN_NAMES.ID, 'end', 13, 4),
-        new Token(TOKEN_NAMES.DOT, '.', 13, 5),
+        new Token(TOKEN_NAMES.ID, 'end', 13, 6),
+        new Token(TOKEN_NAMES.SEMI_COLON, ';', 13, 7),
 
-        new Token(TOKEN_NAMES.EOF, 'EOF', 14, 1)
+        new Token(TOKEN_NAMES.ID, 'end', 14, 4),
+        new Token(TOKEN_NAMES.DOT, '.', 14, 5),
+
+        new Token(TOKEN_NAMES.EOF, 'EOF', 15, 1)
       ]
 
       expect(tokens).toEqual(expected)
@@ -96,7 +101,7 @@ describe('Given a Lexer', () => {
     })
 
     it('should correctly count the lines', () => {
-      expect(lexer.getLine()).toEqual(14)
+      expect(lexer.getLine()).toEqual(15)
     })
   })
 
