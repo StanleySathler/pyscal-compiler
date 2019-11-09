@@ -65,4 +65,61 @@ module.exports = {
 
   /* EOF */
   EOF: 'EOF',
+
+  /* Keyword: 'class' */
+  KW_CLASS: 'class',
+
+  /* Keyword: 'end' */
+  KW_END: 'end',
+
+  /* Keyword: 'def' */
+  KW_DEF: 'def',
+
+  /* Keyword: 'defstatic' */
+  KW_DEFSTATIC: 'defstatic',
+
+  /* Keyword: 'return' */
+  KW_RETURN: 'return',
+
+  /* Keyword: 'main' */
+  KW_MAIN: 'main',
+
+  /* Keyword: 'void' */
+  KW_VOID: 'void',
+
+  /* Keyword: 'String' */
+  KW_STRING: 'String',
+
+  /* Keyword: 'bool' */
+  KW_BOOL: 'bool',
+
+  /* Keyword: 'integer' */
+  KW_INTEGER: 'integer',
+
+  /* Keyword: 'double' */
+  KW_DOUBLE: 'double',
+
+  /* Keyword: 'true' */
+  KW_TRUE: 'true',
+
+  /* Keyword: 'false' */
+  KW_FALSE: 'false',
+
+  /* Keyword: 'if' */
+  KW_IF: 'if',
+
+  /* Keyword: 'else' */
+  KW_ELSE: 'else',
+
+  /* Keyword: 'or' */
+  KW_OR: 'or',
+
+  /* Keyword: 'and' */
+  KW_AND: 'and',
+
+  /* Keyword: 'while' */
+  KW_WHILE: 'while',
+
+  /* Keyword: 'write' */
+  KW_WRITE: 'write',
 }
