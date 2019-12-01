@@ -19,10 +19,10 @@ module.exports = class Parser {
   }
 
   /**
-   *
+   * Check if current token is equal to the given one.
    */
-  getToken() {
-    return this.__nextReadToken
+  isToken(token) {
+    return this.__nextReadToken.getName() === token
   }
 
   /**
@@ -37,7 +37,7 @@ module.exports = class Parser {
    * If so, matches both tokens and advance to the next token.
    */
   match(expectedToken) {
-    if (this.__nextReadToken().getName() === expectedToken) {
+    if (this.isToken(expectedToken)) {
       this.advance()
       return true
     }
