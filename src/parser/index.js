@@ -299,7 +299,40 @@ module.exports = class Parser {
    * ListaCmd -> ListaCmdLinha
    */
   parseListaCmd() {
-    this.parseListaCmdLinha()
+    const expected = 'if | while | ID | write | return | end | else'
+
+    /* FIRST(ListaCmdLinha) */
+    if (
+      this.isToken(TOKEN.KW_IF) ||
+      this.isToken(TOKEN.KW_WHILE) ||
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.KW_WRITE) ||
+      this.isToken(TOKEN.KW_RETURN) ||
+      this.isToken(TOKEN.KW_END) ||
+      this.isToken(TOKEN.KW_ELSE)
+    ) {
+      this.parseListaCmdLinha()
+    }
+
+    else {
+      /* Synch: ListaCmd */
+      /* FOLLOW(Synch) */
+      if (
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseListaCmd()
+      }
+    }
   }
 
   /**
