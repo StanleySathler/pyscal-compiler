@@ -279,20 +279,29 @@ module.exports = class Parser {
    * TipoPrimitivo -> bool | integer | String | double | void
    */
   parseTipoPrimitivo() {
-    if (this.__nextReadToken.getName() === TOKEN.KW_BOOL)
-      this.match(TOKEN.KW_BOOL)
+    const expected = 'bool | integer | String | double | void'
 
-    else if (this.__nextReadToken.getName() === TOKEN.KW_INTEGER)
-      this.match(TOKEN.KW_INTEGER)
+    if (
+      !this.match(TOKEN.KW_BOOL) &&
+      !this.match(TOKEN.KW_INTEGER) &&
+      !this.match(TOKEN.KW_STRING) &&
+      !this.match(TOKEN.KW_DOUBLE) &&
+      !this.match(TOKEN.KW_VOID)
+    ) {
+      /* Synch: TipoPrimitivo */
+      /* FOLLOW(TipoPrimitivo) */
+      if (this.isToken(TOKEN.ID)) {
+        this.addError(expected)
+        return
+      }
 
-    else if (this.__nextReadToken.getName() === TOKEN.KW_STRING)
-      this.match(TOKEN.KW_STRING)
-
-    else if (this.__nextReadToken.getName() === TOKEN.KW_DOUBLE)
-      this.match(TOKEN.KW_DOUBLE)
-
-    else if (this.__nextReadToken.getName() === TOKEN.KW_VOID)
-      this.match(TOKEN.KW_VOID)
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseTipoPrimitivo()
+      }
+    }
   }
 
   /**
