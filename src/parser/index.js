@@ -504,8 +504,42 @@ module.exports = class Parser {
    * Exp1 -> Exp2 Exp1Linha
    */
   parseExp1() {
-    this.parseExp2()
-    this.parseExp1Linha()
+    const expected = '< | <= | > | >= | == | !='
+
+    /* FIRST(Exp2) */
+    if (
+      this.match(TOKEN.OP_LT) ||
+      this.match(TOKEN.OP_LTE) ||
+      this.match(TOKEN.OP_GT) ||
+      this.match(TOKEN.OP_GE) ||
+      this.match(TOKEN.OP_EQ) ||
+      this.match(TOKEN.OP_NE)
+    ) {
+      this.parseExp2()
+      this.parseExp1Linha()
+    }
+
+    else {
+      /* Synch: Exp1 */
+      /* FOLLOW(Exp1) */
+      if (
+        this.match(TOKEN.KW_OR) ||
+        this.match(TOKEN.KW_AND) ||
+        this.match(TOKEN.CLS_RND_BRACKET) ||
+        this.match(TOKEN.SEMI_COLON) ||
+        this.match(TOKEN.COMMA)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseExp1()
+      }
+    }
   }
 
   /**
