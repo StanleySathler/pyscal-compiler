@@ -438,13 +438,39 @@ module.exports = class Parser {
    * CmdAtribui -> = Expressao ;
    */
   parseCmdAtribui() {
-    if (!this.match(TOKEN.OP_EQ))
-      this.addError('parseCmdAtribui')
+    const expected = '='
 
-    this.parseExpressao()
+    /* CmdAtribui -> = Expressao ; */
+    if (this.match(TOKEN.OP_EQ)) {
+      this.parseExpressao()
 
-    if (!this.match(TOKEN.SEMI_COLON))
-      this.addError('parseCmdAtribui')
+      if (!this.match(TOKEN.SEMI_COLON))
+        this.addError(';')
+    }
+
+    else {
+      /* Synch: CmdAtribui */
+      /* FOLLOW(CmdAtribui) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseCmdAtribui()
+      }
+    }
   }
 
   /**
