@@ -168,11 +168,38 @@ module.exports = class Parser {
    * RegexDeclaraId -> DeclaraID RegexDeclaraId | epsilon
    */
   parseRegexDeclaraId() {
-    this.parseDeclaraID()
+    /* RegexDeclaraId -> DeclaraID RegexDeclaraId */
+    /* FIRST(DeclaraId) */
+    if (
+      this.isToken(TOKEN.KW_BOOL) ||
+      this.isToken(TOKEN.KW_INTEGER) ||
+      this.isToken(TOKEN.KW_STRING) ||
+      this.isToken(TOKEN.KW_DOUBLE) ||
+      this.isToken(TOKEN.KW_VOID)
+    ) {
+      this.parseDeclaraID()
+      this.parseRegexDeclaraId()
+    }
 
-    this.parseRegexDeclaraId()
+    /* RegexDeclaraId -> epsilon */
+    /* FOLLOW(RegexDeclaraId) */
+    else if (
+      this.isToken(TOKEN.KW_IF) ||
+      this.isToken(TOKEN.KW_WHILE) ||
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.KW_WRITE) ||
+      this.isToken(TOKEN.KW_RETURN) ||
+      this.isToken(TOKEN.KW_END)
+    ) {
+      return
+    }
 
-    /* @todo: implement cases for "RegexDeclaraId -> epsilon" */
+    /* Skip: Panic mode */
+    else {
+      this.skip('bool | integer | String | double | void | if | while | ID | write | return | end')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseRegexDeclaraId()
+    }
   }
 
   /**
@@ -183,11 +210,11 @@ module.exports = class Parser {
 
     /* FIRST(Arg) */
     if (
-      this.match(TOKEN.KW_BOOL) ||
-      this.match(TOKEN.KW_INTEGER) ||
-      this.match(TOKEN.KW_STRING) ||
-      this.match(TOKEN.KW_DOUBLE) ||
-      this.match(TOKEN.KW_VOID)
+      this.isToken(TOKEN.KW_BOOL) ||
+      this.isToken(TOKEN.KW_INTEGER) ||
+      this.isToken(TOKEN.KW_STRING) ||
+      this.isToken(TOKEN.KW_DOUBLE) ||
+      this.isToken(TOKEN.KW_VOID)
     ) {
       this.parseArg()
       this.parseListaArgLinha()
