@@ -71,24 +71,42 @@ module.exports = class Parser {
    * Classe -> class ID : ListaFuncao Main end .
    */
   parseClasse() {
-    if (!this.match(TOKEN.KW_CLASS))
-      this.addError(TOKEN.KW_CLASS)
+    const expected = 'class'
 
-    if (!this.match(TOKEN.ID))
-      this.addError(TOKEN.ID)
+    /* Classe -> class ID : ListaFuncao Main end . */
+    if (this.match(TOKEN.KW_CLASS)) {
+      if (!this.match(TOKEN.ID))
+        this.addError('ID')
 
-    if (!this.match(TOKEN.COLON))
-      this.addError(TOKEN.COLON)
+      if (!this.match(TOKEN.COLON))
+        this.addError(':')
 
-    this.parseListaFuncao()
+      this.parseListaFuncao()
 
-    this.parseMain()
+      this.parseMain()
 
-    if (!this.match(TOKEN.KW_END))
-      this.addError(TOKEN.COLON)
+      if (!this.match(TOKEN.KW_END))
+        this.addError('end')
 
-    if (!this.match(TOKEN.DOT))
-      this.addError(TOKEN.DOT)
+      if (!this.match(TOKEN.DOT))
+        this.addError('.')
+    }
+
+    else {
+      /* Synch: Classe */
+      /* FOLLOW(Classe) */
+      if (this.isToken(TOKEN.EOF)) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseClasse()
+      }
+    }
   }
 
   /**
