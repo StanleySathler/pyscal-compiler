@@ -132,36 +132,57 @@ module.exports = class Parser {
    * Funcao -> def TipoPrimitivo ID ( ListaArg ) : RegexDeclaraId ListaCmd Retorno end ;
    */
   parseFuncao() {
-    if (!this.match(TOKEN.KW_DEF))
-      this.addError(TOKEN.KW_DEF)
+    const expected = 'def'
 
-    this.parseTipoPrimitivo()
+    /* Funcao -> def TipoPrimitivo ID ( ListaArg ) : RegexDeclaraId ListaCmd Retorno end ; */
+    if (this.match(TOKEN.KW_DEF)) {
+      this.parseTipoPrimitivo()
 
-    if (!this.match(TOKEN.ID))
-      this.addError(TOKEN.ID)
+      if (!this.match(TOKEN.ID))
+        this.addError('ID')
 
-    if (!this.match(TOKEN.OPN_RND_BRACKET))
-      this.addError(TOKEN.OPN_RND_BRACKET)
+      if (!this.match(TOKEN.OPN_RND_BRACKET))
+        this.addError('(')
 
-    this.parseListaArg()
+      this.parseListaArg()
 
-    if (!this.match(TOKEN.CLS_RND_BRACKET))
-      this.addError(TOKEN.CLS_RND_BRACKET)
+      if (!this.match(TOKEN.CLS_RND_BRACKET))
+        this.addError(')')
 
-    if (!this.match(TOKEN.COLON))
-      this.addError(TOKEN.COLON)
+      if (!this.match(TOKEN.COLON))
+        this.addError(':')
 
-    this.parseRegexDeclaraId()
+      this.parseRegexDeclaraId()
 
-    this.parseListaCmd()
+      this.parseListaCmd()
 
-    this.parseRetorno()
+      this.parseRetorno()
 
-    if (!this.match(TOKEN.KW_END))
-      this.addError(TOKEN.KW_END)
+      if (!this.match(TOKEN.KW_END))
+        this.addError('end')
 
-    if (!this.match(TOKEN.SEMI_COLON))
-      this.addError(TOKEN.SEMI_COLON)
+      if (!this.match(TOKEN.SEMI_COLON))
+        this.addError(';')
+    }
+
+    else {
+      /* Synch: Funcao */
+      /* FOLLOW(Funcao) */
+      if (
+        this.isToken(TOKEN.KW_DEF) ||
+        this.isToken(TOKEN.KW_DEFSTATIC)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseFuncao()
+      }
+    }
   }
 
   /**
