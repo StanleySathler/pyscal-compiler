@@ -48,6 +48,18 @@ module.exports = {
   /* Negative minus: '-' */
   OP_NGT: 'OP_NGT',
 
+  /* Sum: '+' */
+  OP_SUM: 'OP_SUM',
+
+  /* Subtraction: '-' */
+  OP_SUB: 'OP_SUB',
+
+  /* Multiplication: '*' */
+  OP_MULT: 'OP_MULT',
+
+  /* Division: '/' */
+  OP_DIV: 'OP_DIV',
+
   /* Negation: '!' */
   OP_NOT: 'OP_NOT',
 
