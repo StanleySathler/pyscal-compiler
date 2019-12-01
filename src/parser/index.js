@@ -528,7 +528,7 @@ module.exports = class Parser {
   parseExp2Linha() {}
 
   /**
-   * Exp4 Exp3Linha
+   * Exp3 -> Exp4 Exp3Linha
    */
   parseExp3() {
     this.parseExp4()
