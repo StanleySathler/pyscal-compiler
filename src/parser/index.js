@@ -365,27 +365,73 @@ module.exports = class Parser {
    * CmdIFLinha -> end ; | else : ListaCmd end ;
    */
   parseCmdIFLinha() {
-    if (this.__nextReadToken.getName() === TOKEN.KW_END) {
-      this.match(TOKEN.KW_END)
+    const expected = 'end | else'
 
+    /* CmdIFLinha -> end ; */
+    if (this.match(TOKEN.KW_END)) {
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError('parseCmdIFLinha')
+        this.addError(';')
     }
 
-    else if (this.__nextReadToken.getName() === TOKEN.KW_ELSE) {
-      this.match(TOKEN.KW_ELSE)
-
+    /* CmdIFLinha -> else : ListaCmd end ; */
+    else if (this.match(TOKEN.KW_ELSE)) {
       if (!this.match(TOKEN.COLON))
-        this.addError('parseCmdIFLinha')
+        this.addError(':')
 
       this.parseListaCmd()
 
       if (!this.match(TOKEN.KW_END))
-        this.addError('parseCmdIFLinha')
+        this.addError('end')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError('parseCmdIFLinha')
+        this.addError(';')
     }
+
+    else {
+      /* Synch: CmdIFLinha */
+      /* FOLLOW(CmdIFLinha) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseCmdIFLinha()
+      }
+    }
+
+    // if (this.__nextReadToken.getName() === TOKEN.KW_END) {
+    //   this.match(TOKEN.KW_END)
+
+    //   if (!this.match(TOKEN.SEMI_COLON))
+    //     this.addError('parseCmdIFLinha')
+    // }
+
+    // else if (this.__nextReadToken.getName() === TOKEN.KW_ELSE) {
+    //   this.match(TOKEN.KW_ELSE)
+
+    //   if (!this.match(TOKEN.COLON))
+    //     this.addError('parseCmdIFLinha')
+
+    //   this.parseListaCmd()
+
+    //   if (!this.match(TOKEN.KW_END))
+    //     this.addError('parseCmdIFLinha')
+
+    //   if (!this.match(TOKEN.SEMI_COLON))
+    //     this.addError('parseCmdIFLinha')
+    // }
   }
 
   /**
