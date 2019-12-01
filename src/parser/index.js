@@ -512,7 +512,42 @@ module.exports = class Parser {
    * Exp1Linha -> < Exp2 Exp1Linha | <= Exp2 Exp1Linha | > Exp2 Exp1Linha |
    * >= Exp2 Exp1Linha | == Exp2 Exp1Linha | != Exp2 Exp1Linha | epsilon
    */
-  parseExp1Linha() {}
+  parseExp1Linha() {
+    /*
+     * Exp1Linha -> < Exp2 Exp1Linha | <= Exp2 Exp1Linha | > Exp2 Exp1Linha |
+     * >= Exp2 Exp1Linha | == Exp2 Exp1Linha | != Exp2 Exp1Linha
+     */
+    if (
+      this.match(TOKEN.OP_LT) ||
+      this.match(TOKEN.OP_LTE) ||
+      this.match(TOKEN.OP_GT) ||
+      this.match(TOKEN.OP_GE) ||
+      this.match(TOKEN.OP_EQ) ||
+      this.match(TOKEN.OP_NE)
+    ) {
+      this.parseExp2()
+      this.parseExp1Linha()
+    }
+
+    /* Exp1Linha -> epsilon */
+    /* FOLLOW(Exp1Linha) */
+    else if (
+      this.isToken(TOKEN.KW_OR) ||
+      this.isToken(TOKEN.KW_AND) ||
+      this.isToken(TOKEN.CLS_RND_BRACKET) ||
+      this.isToken(TOKEN.SEMI_COLON) ||
+      this.isToken(TOKEN.COMMA)
+    ) {
+      return
+    }
+
+    /* Skip: Panic mode */
+    else {
+      this.skip('< | <= | > | >= | == | != | or | and | ) | ; | ,')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseExp1Linha()
+    }
+  }
 
   /**
    * Exp2 -> Exp3 Exp2Linha
