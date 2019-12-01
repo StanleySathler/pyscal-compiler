@@ -95,13 +95,56 @@ module.exports = class Parser {
    * DeclaraID -> TipoPrimitivo ID ;
    */
   parseDeclaraID() {
-    this.parseTipoPrimitivo()
+    const expected = 'bool | integer | String | double | void'
 
-    if (!this.match(TOKEN.ID))
-      this.addError(TOKEN.ID)
+    /* DeclaraID -> TipoPrimitivo ID ; */
+    /* FIRST(TipoPrimitivo) */
+    if (
+      this.isToken(TOKEN.KW_BOOL) ||
+      this.isToken(TOKEN.KW_INTEGER) ||
+      this.isToken(TOKEN.KW_STRING) ||
+      this.isToken(TOKEN.KW_DOUBLE) ||
+      this.isToken(TOKEN.KW_VOID)
+    ) {
+      this.parseTipoPrimitivo()
 
-    if (!this.match(TOKEN.SEMI_COLON))
-      this.addError(TOKEN.SEMI_COLON)
+      if (!this.match(TOKEN.ID))
+        this.addError('ID')
+
+      if (!this.match(TOKEN.SEMI_COLON))
+        this.addError(';')
+    }
+
+    else {
+      /* Synch: DeclaraID */
+      /* FOLLOW(DeclaraID) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseDeclaraID()
+      }
+    }
+
+    // this.parseTipoPrimitivo()
+
+    // if (!this.match(TOKEN.ID))
+    //   this.addError(TOKEN.ID)
+
+    // if (!this.match(TOKEN.SEMI_COLON))
+    //   this.addError(TOKEN.SEMI_COLON)
   }
 
   /**
