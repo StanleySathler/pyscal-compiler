@@ -466,7 +466,35 @@ module.exports = class Parser {
   /**
    * RegexExp -> Expressao RegexExpLinha | epsilon
    */
-  parseRegexExp() {}
+  parseRegexExp() {
+    /* FIRST(Expressao) */
+    if (
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.CONST_INT) ||
+      this.isToken(TOKEN.CONST_DBL) ||
+      this.isToken(TOKEN.CONST_STR) ||
+      this.isToken(TOKEN.KW_TRUE) ||
+      this.isToken(TOKEN.KW_FALSE) ||
+      this.isToken(TOKEN.OP_NGT) ||
+      this.isToken(TOKEN.OP_NOT) ||
+      this.isToken(TOKEN.OPN_RND_BRACKET)
+    ) {
+      this.parseRegexExpLinha()
+    }
+
+    /* RegexExp -> epsilon */
+    /* FOLLOW(RegexExp) */
+    else if (this.isToken(TOKEN.CLS_RND_BRACKET)) {
+      return
+    }
+
+    /* Skip: Panic mode */
+    else {
+      this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | ( | )')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseRegexExp()
+    }
+  }
 
   /**
    * RegexExpLinha -> , Expressao RegexExpLinha | epsilon
