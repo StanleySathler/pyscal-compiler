@@ -538,7 +538,40 @@ module.exports = class Parser {
   /**
    * Exp3Linha -> * Exp4 Exp3Linha | / Exp4 Exp3Linha | epsilon
    */
-  parseExp3Linha() {}
+  parseExp3Linha() {
+    /* Exp3Linha -> * Exp4 Exp3Linha | / Exp4 Exp3Linha */
+    if (this.isToken(TOKEN.OP_MULT) || this.isToken(TOKEN.OP_DIV)) {
+      this.parseExp4()
+      this.parseExp3Linha()
+    }
+
+    /* Exp3Linha -> epsilon */
+    /* FOLLOW(Exp3Linha) */
+    else if (
+      this.__nextReadToken.getName() === TOKEN.OP_SUM ||
+      this.__nextReadToken.getName() === TOKEN.OP_SUB ||
+      this.__nextReadToken.getName() === TOKEN.OP_LT ||
+      this.__nextReadToken.getName() === TOKEN.OP_LTE ||
+      this.__nextReadToken.getName() === TOKEN.OP_GT ||
+      this.__nextReadToken.getName() === TOKEN.OP_GE ||
+      this.__nextReadToken.getName() === TOKEN.OP_EQ ||
+      this.__nextReadToken.getName() === TOKEN.OP_NE ||
+      this.__nextReadToken.getName() === TOKEN.KW_OR ||
+      this.__nextReadToken.getName() === TOKEN.KW_AND ||
+      this.__nextReadToken.getName() === TOKEN.CLS_RND_BRACKET ||
+      this.__nextReadToken.getName() === TOKEN.SEMI_COLON ||
+      this.__nextReadToken.getName() === TOKEN.COMMA
+    ) {
+      return
+    }
+
+    /* Skip: Panic mode */
+    else {
+      this.skip('* | / ')
+      if (this.isToken(TOKEN.EOF))
+        this.parseExp3Linha()
+    }
+  }
 
   /**
    * Exp4 -> ID Exp4Linha | ConstInteger | ConstDouble | ConstString |
