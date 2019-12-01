@@ -234,45 +234,63 @@ module.exports = class Parser {
    * Main -> defstatic void main (String[] ID) : RegexDeclaraId ListaCmd end ;
    */
   parseMain() {
-    if (!this.match(TOKEN.KW_DEFSTATIC))
-      this.addError(TOKEN.KW_DEFSTATIC)
+    const expected = 'defstatic'
 
-    if (!this.match(TOKEN.KW_VOID))
-      this.addError(TOKEN.KW_VOID)
+    /* Main -> defstatic void main (String[] ID) : RegexDeclaraId ListaCmd end ; */
+    if (this.match(TOKEN.KW_DEFSTATIC)) {
+      if (!this.match(TOKEN.KW_VOID))
+        this.addError('void')
 
-    if (!this.match(TOKEN.KW_MAIN))
-      this.addError(TOKEN.KW_MAIN)
+      if (!this.match(TOKEN.KW_MAIN))
+        this.addError('main')
 
-    if (!this.match(TOKEN.OPN_RND_BRACKET))
-      this.addError(TOKEN.OPN_RND_BRACKET)
+      if (!this.match(TOKEN.OPN_RND_BRACKET))
+        this.addError('(')
 
-    if (!this.match(TOKEN.KW_STRING))
-      this.addError(TOKEN.KW_STRING)
+      if (!this.match(TOKEN.KW_STRING))
+        this.addError('String')
 
-    if (!this.match(TOKEN.OPN_BRACKET))
-      this.addError(TOKEN.OPN_BRACKET)
+      if (!this.match(TOKEN.OPN_BRACKET))
+        this.addError('[')
 
-    if (!this.match(TOKEN.CLS_BRACKET))
-      this.addError(TOKEN.CLS_BRACKET)
+      if (!this.match(TOKEN.CLS_BRACKET))
+        this.addError(']')
 
-    if (!this.match(TOKEN.ID))
-      this.addError(TOKEN.ID)
+      if (!this.match(TOKEN.ID))
+        this.addError(TOKEN.ID)
 
-    if (!this.match(TOKEN.CLS_RND_BRACKET))
-      this.addError(TOKEN.CLS_RND_BRACKET)
+      if (!this.match(TOKEN.CLS_RND_BRACKET))
+        this.addError(')')
 
-    if (!this.match(TOKEN.COLON))
-      this.addError(TOKEN.COLON)
+      if (!this.match(TOKEN.COLON))
+        this.addError(':')
 
-    this.parseRegexDeclaraId()
+      this.parseRegexDeclaraId()
 
-    this.parseListaCmd()
+      this.parseListaCmd()
 
-    if (!this.match(TOKEN.KW_END))
-      this.addError(TOKEN.KW_END)
+      if (!this.match(TOKEN.KW_END))
+        this.addError('end')
 
-    if (!this.match(TOKEN.SEMI_COLON))
-      this.addError(TOKEN.SEMI_COLON)
+      if (!this.match(TOKEN.SEMI_COLON))
+        this.addError(';')
+    }
+
+    else {
+      /* Synch: Main */
+      /* FOLLOW(Main) */
+      if (this.isToken(TOKEN.KW_END)) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseMain()
+      }
+    }
   }
 
   /**
