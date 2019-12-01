@@ -176,11 +176,38 @@ module.exports = class Parser {
   }
 
   /**
-   * ListaArg -> Arg ListaArg2
+   * ListaArg -> Arg ListaArgLinha
    */
   parseListaArg() {
-    this.parseArg()
-    this.parseListaArg2()
+    const expected = 'bool | integer | String | double | void'
+
+    /* FIRST(Arg) */
+    if (
+      this.match(TOKEN.KW_BOOL) ||
+      this.match(TOKEN.KW_INTEGER) ||
+      this.match(TOKEN.KW_STRING) ||
+      this.match(TOKEN.KW_DOUBLE) ||
+      this.match(TOKEN.KW_VOID)
+    ) {
+      this.parseArg()
+      this.parseListaArgLinha()
+    }
+
+    else {
+      /* Synch: ListaArg */
+      /* FOLLOW(ListaArg) */
+      if (this.isToken(TOKEN.CLS_RND_BRACKET)) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseListaArg()
+      }
+    }
   }
 
   /**
