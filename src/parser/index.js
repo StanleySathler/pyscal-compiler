@@ -578,11 +578,34 @@ module.exports = class Parser {
       this.parseExp3Linha()
     }
 
-    /* Skip: Panic mode */
     else {
-      this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
-      if (!this.isToken(TOKEN.EOF))
-        this.parseExp3()
+      /* Synch: Exp3 */
+      /* FOLLOW(Exp3) */
+      if (
+        this.isToken(TOKEN.OP_SUM) ||
+        this.isToken(TOKEN.OP_SUB) ||
+        this.isToken(TOKEN.OP_LT) ||
+        this.isToken(TOKEN.OP_LTE) ||
+        this.isToken(TOKEN.OP_GT) ||
+        this.isToken(TOKEN.OP_GE) ||
+        this.isToken(TOKEN.OP_EQ) ||
+        this.isToken(TOKEN.OP_NE) ||
+        this.isToken(TOKEN.KW_OR) ||
+        this.isToken(TOKEN.KW_AND) ||
+        this.isToken(TOKEN.CLS_RND_BRACKET) ||
+        this.isToken(TOKEN.SEMI_COLON) ||
+        this.isToken(TOKEN.COMMA)
+      ) {
+        this.addError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+        if (!this.isToken(TOKEN.EOF))
+          this.parseExp3()
+      }
     }
   }
 
