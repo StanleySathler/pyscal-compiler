@@ -498,7 +498,30 @@ module.exports = class Parser {
   /**
    * ExpLinha -> or Exp1 ExpLinha | and Exp1 ExpLinha | epsilon
    */
-  parseExpLinha() {}
+  parseExpLinha() {
+    /* ExpLinha -> or Exp1 ExpLinha | and Exp1 ExpLinha */
+    if (this.match(TOKEN.KW_OR) || this.match(TOKEN.KW_AND)) {
+      this.parseExp1()
+      this.parseExpLinha()
+    }
+
+    /* ExpLinha -> epsilon */
+    /* FOLLOW(ExpLinha) */
+    else if (
+      this.isToken(TOKEN.CLS_RND_BRACKET) ||
+      this.isToken(TOKEN.SEMI_COLON) ||
+      this.isToken(TOKEN.COMMA)
+    ) {
+      return
+    }
+
+    /* Skip: Panic mode */
+    else {
+      this.skip('or | and | ) | ; | ,')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseExpLinha()
+    }
+  }
 
   /**
    * Exp1 -> Exp2 Exp1Linha
