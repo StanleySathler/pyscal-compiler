@@ -491,8 +491,43 @@ module.exports = class Parser {
    * Expressao -> Exp1 ExpLinha
    */
   parseExpressao() {
-    this.parseExp1()
-    this.parseExpLinha()
+    const expected = 'ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | ('
+
+    /* FIRST(Exp1) */
+    if (
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.CONST_INT) ||
+      this.isToken(TOKEN.CONST_DBL) ||
+      this.isToken(TOKEN.CONST_STR) ||
+      this.isToken(TOKEN.KW_TRUE) ||
+      this.isToken(TOKEN.KW_FALSE) ||
+      this.isToken(TOKEN.OP_NGT) ||
+      this.isToken(TOKEN.OP_NOT) ||
+      this.isToken(TOKEN.OPN_RND_BRACKET)
+    ) {
+      this.parseExp1()
+      this.parseExpLinha()
+    }
+
+    else {
+      /* Synch: Expressao */
+      /* FOLLOW(Expressao) */
+      if (
+        this.isToken(TOKEN.CLS_RND_BRACKET) ||
+        this.isToken(TOKEN.SEMI_COLON) ||
+        this.isToken(TOKEN.COMMA)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseExpressao()
+      }
+    }
   }
 
   /**
