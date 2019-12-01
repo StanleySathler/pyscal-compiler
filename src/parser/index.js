@@ -472,19 +472,23 @@ module.exports = class Parser {
    * RegexExpLinha -> , Expressao RegexExpLinha | epsilon
    */
   parseRegexExpLinha() {
-    if (this.__nextReadToken.getName() === TOKEN.COMMA) {
-      this.match(TOKEN.COMMA)
-
+    /* RegexExpLinha -> , Expressao RegexExpLinha */
+    if (this.match(TOKEN.COMMA)) {
       this.parseExpressao()
-
       this.parseRegexExpLinha()
     }
 
-    else if (this.__nextReadToken.getName() === TOKEN.CLS_RND_BRACKET)
+    /* RegexExpLinha -> epsilon */
+    /* FOLLOW(RegexExpLinha) */
+    else if (this.isToken(TOKEN.CLS_RND_BRACKET))
       return
 
-    else
-      this.addError('parseRegexExpLinha')
+    /* Skip: Panic mode */
+    else {
+      this.skip(', | )')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseRegexExpLinha()
+    }
   }
 
   /**
