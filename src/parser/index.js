@@ -451,16 +451,39 @@ module.exports = class Parser {
    * CmdFuncao -> ( RegexExp ) ;
    */
   parseCmdFuncao() {
-    if (!this.match(TOKEN.OPN_RND_BRACKET))
-      this.addError('parseCmdFuncao')
+    if (this.match(TOKEN.OPN_RND_BRACKET)) {
+      this.parseRegexExp()
 
-    this.parseRegexExp()
+      if (!this.match(TOKEN.CLS_RND_BRACKET))
+        this.addError(')')
 
-    if (!this.match(TOKEN.CLS_RND_BRACKET))
-      this.addError('parseCmdFuncao')
+      if (!this.match(TOKEN.SEMI_COLON))
+        this.addError(';')
+    }
 
-    if (!this.match(TOKEN.SEMI_COLON))
-      this.addError('parseCmdFuncao')
+    else {
+      /* Synch: CmdFuncao */
+      /* FOLLOW(CmdFuncao) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError('(')
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip('(')
+        if (!this.isToken(TOKEN.EOF))
+          this.parseCmdFuncao()
+      }
+    }
   }
 
   /**
