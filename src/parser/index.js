@@ -202,13 +202,43 @@ module.exports = class Parser {
   }
 
   /**
-   * Arg -> ListaPrimitivo ID
+   * Arg -> TipoPrimitivo ID
    */
   parseArg() {
-    this.parseTipoPrimitivo()
+    const expected = 'bool | integer | String | double | void'
 
-    if (!this.match(TOKEN.ID))
-      this.addError(TOKEN.ID)
+    /* FIRST(TipoPrimitivo) */
+    if (
+      this.match(TOKEN.KW_BOOL) ||
+      this.match(TOKEN.KW_INTEGER) ||
+      this.match(TOKEN.KW_STRING) ||
+      this.match(TOKEN.KW_DOUBLE) ||
+      this.match(TOKEN.KW_VOID)
+    ) {
+      this.parseTipoPrimitivo()
+
+      if (!this.match(TOKEN.ID))
+        this.addError('ID')
+    }
+
+    else {
+      /* Synch: Arg */
+      /* FOLLOW(Arg) */
+      if (
+        this.isToken(TOKEN.COMMA) ||
+        this.isToken(TOKEN.CLS_RND_BRACKET)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseArg()
+      }
+    }
   }
 
   /**
