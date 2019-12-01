@@ -184,21 +184,25 @@ module.exports = class Parser {
   }
 
   /**
-   * ListaArg2 -> , ListaArg | epsilon
+   * ListaArgLinha -> , ListaArg | epsilon
    */
-  parseListaArg2() {
-    /* ListaArg2 -> , ListaArg */
-    if (this.__nextReadToken.getName() === TOKEN.COMMA) {
-      this.match(TOKEN.COMMA)
-      this.parseListaArg()
+  parseListaArgLinha() {
+    /* ListaArgLinha -> , ListaArg */
+    if (this.match(TOKEN.COMMA)) {
+			this.parseListaArg()
     }
 
-    /* ListaArg2 -> epsilon */
-    else if (this.__nextReadToken.getName() === TOKEN.CLS_RND_BRACKET)
-      return
+    /* ListaArgLinha -> epsilon */
+    /* FOLLOW(ListaArgLinha) */
+    else if (this.isToken(TOKEN.CLS_RND_BRACKET))
+			return
 
-    else
-      this.addError("',' or ')'")
+    /* Skip: Panic mode */
+    else {
+			this.skip(', | )');
+      if (!this.isToken(TOKEN.EOF))
+        this.parseListaArgLinha()
+    }
   }
 
   /**
