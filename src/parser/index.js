@@ -392,27 +392,53 @@ module.exports = class Parser {
    * CmdWhile -> while ( Expressao ) : ListaCmd end ;
    */
   parseCmdWhile() {
-    if (!this.match(TOKEN.KW_WHILE))
-      this.addError('parseCmdWhile')
+    expected = 'while'
 
-    if (!this.match(TOKEN.OPN_RND_BRACKET))
-      this.addError('parseCmdWhile')
+    /* CmdWhile -> while ( Expressao ) : ListaCmd end ; */
+    if (this.match(TOKEN.KW_WHILE)) {
+      if (!this.match(TOKEN.OPN_RND_BRACKET))
+        this.addError('(')
 
-    this.parseExpressao()
+      this.parseExpressao()
 
-    if (!this.match(TOKEN.CLS_RND_BRACKET))
-      this.addError('parseCmdWhile')
+      if (!this.match(TOKEN.CLS_RND_BRACKET))
+        this.addError(')')
 
-    if (!this.match(TOKEN.COLON))
-      this.addError('parseCmdWhile')
+      if (!this.match(TOKEN.COLON))
+        this.addError(':')
 
-    this.parseListaCmd()
+      this.parseListaCmd()
 
-    if (!this.match(TOKEN.KW_END))
-      this.addError('parseCmdWhile')
+      if (!this.match(TOKEN.KW_END))
+        this.addError('end')
 
-    if (!this.match(TOKEN.SEMI_COLON))
-      this.addError('parseCmdWhile')
+      if (!this.match(TOKEN.SEMI_COLON))
+        this.addError(';')
+    }
+
+    else {
+      /* Synch: CmdWhile */
+      /* FOLLOW(CmdWhile) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseCmdWhile()
+      }
+    }
   }
 
   /**
@@ -455,7 +481,7 @@ module.exports = class Parser {
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseCmdAtribui()
+          this.parseCmdWrite()
       }
     }
   }
