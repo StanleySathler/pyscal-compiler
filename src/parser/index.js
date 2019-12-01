@@ -518,8 +518,51 @@ module.exports = class Parser {
    * Exp2 -> Exp3 Exp2Linha
    */
   parseExp2() {
-    this.parseExp3()
-    this.parseExp2Linha()
+    const expected = 'ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | ('
+
+    /* FIRST(Exp3) */
+    if (
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.CONST_INT) ||
+      this.isToken(TOKEN.CONST_DBL) ||
+      this.isToken(TOKEN.CONST_STR) ||
+      this.isToken(TOKEN.KW_TRUE) ||
+      this.isToken(TOKEN.KW_FALSE) ||
+      this.isToken(TOKEN.OP_NGT) ||
+      this.isToken(TOKEN.OP_NOT) ||
+      this.isToken(TOKEN.OPN_RND_BRACKET)
+    ) {
+      this.parseExp3()
+      this.parseExp2Linha()
+    }
+
+    else {
+      /* Synch: Exp2 */
+      /* FOLLOW(Exp2) */
+      if (
+        this.isToken(TOKEN.OP_LT) ||
+        this.isToken(TOKEN.OP_LTE) ||
+        this.isToken(TOKEN.OP_GT) ||
+        this.isToken(TOKEN.OP_GE) ||
+        this.isToken(TOKEN.OP_EQ) ||
+        this.isToken(TOKEN.OP_NE) ||
+        this.isToken(TOKEN.KW_OR) ||
+        this.isToken(TOKEN.KW_AND) ||
+        this.isToken(TOKEN.CLS_RND_BRACKET) ||
+        this.isToken(TOKEN.SEMI_COLON) ||
+        this.isToken(TOKEN.COMMA)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseExp2()
+      }
+    }
   }
 
   /**
