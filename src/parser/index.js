@@ -105,10 +105,35 @@ module.exports = class Parser {
   }
 
   /**
-   * ListaFuncao -> ListaFuncao2
+   * ListaFuncao -> ListaFuncaoLinha
    */
   parseListaFuncao() {
-    this.parseListaFuncao2()
+    const expected = 'def | defstatic'
+
+    /* ListaFuncao -> ListaFuncaoLinha */
+    /* FIRST(ListaFuncaoLinha) */
+    if (
+      this.isToken(TOKEN.KW_DEF) ||
+      this.isToken(TOKEN.KW_DEFSTATIC)
+    ) {
+      this.parseListaFuncaoLinha()
+    }
+
+    else {
+      /* Synch: ListaFuncao */
+      /* FOLLOW(ListaFuncao) */
+      if (this.isToken(TOKEN.KW_DEFSTATIC)) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip('def')
+        if (!this.isToken(TOKEN.EOF))
+          this.parseListaFuncao()
+      }
+    }
   }
 
   /**
