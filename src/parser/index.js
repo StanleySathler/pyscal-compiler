@@ -307,25 +307,33 @@ module.exports = class Parser {
    */
   parseListaCmdLinha() {
     /* ListaCmdLinha -> Cmd ListaCmdLinha */
+    /* FIRST(Cmd) */
     if (
-      this.__nextReadToken.getName() === TOKEN.KW_IF ||
-      this.__nextReadToken.getName() === TOKEN.KW_WHILE ||
-      this.__nextReadToken.getName() === TOKEN.ID ||
-      this.__nextReadToken.getName() === TOKEN.KW_WRITE
+      this.isToken(TOKEN.KW_IF) ||
+      this.isToken(TOKEN.KW_WHILE) ||
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.KW_WRITE)
     ) {
       this.parseCmd()
       this.parseListaCmdLinha()
     }
 
     /* ListaCmdLinha -> epsilon */
+    /* FOLLOW(ListaCmdLinha) */
     else if (
-      this.__nextReadToken.getName() === TOKEN.KW_RETURN ||
-      this.__nextReadToken.getName() === TOKEN.KW_END ||
-      this.__nextReadToken.getName() === TOKEN.KW_ELSE
-    ) return
+      this.isToken(TOKEN.KW_RETURN) ||
+      this.isToken(TOKEN.KW_END) ||
+      this.isToken(TOKEN.KW_ELSE)
+    ) {
+      return
+    }
 
-    else
-      this.addError('parseListaCmdLinha')
+    /* Skip: Panic mode */
+    else {
+      this.skip('if | while | ID | write')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseListaCmdLinha()
+    }
   }
 
   /**
