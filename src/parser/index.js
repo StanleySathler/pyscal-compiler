@@ -215,19 +215,26 @@ module.exports = class Parser {
    * Retorno -> return Expressao ; | epsilon
    */
   parseRetorno() {
-    if (this.__nextReadToken.getName() === TOKEN.KW_RETURN) {
-      this.match(TOKEN.KW_RETURN)
+    const expected = 'return | end'
+
+    /* Retorno -> return Expressao ; */
+    if (this.match(TOKEN.KW_RETURN)) {
       this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(TOKEN.SEMI_COLON)
+        this.addError(';')
     }
 
-    else if (this.__nextReadToken.getName() === TOKEN.KW_END)
+    /* Retorno -> epsilon */
+    else if (this.isToken(TOKEN.KW_END))
       return
 
-    else
-      this.addError("'return' or 'end'")
+    /* Skip: Panic mode */
+    else {
+      this.skip(expected)
+      if (!this.isToken(TOKEN.EOF))
+        this.parseRetorno()
+    }
   }
 
   /**
