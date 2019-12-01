@@ -562,8 +562,28 @@ module.exports = class Parser {
    * Exp3 -> Exp4 Exp3Linha
    */
   parseExp3() {
-    this.parseExp4()
-    this.parseExp3Linha()
+    /* FIRST(Exp4) */
+    if (
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.CONST_INT) ||
+      this.isToken(TOKEN.CONST_DBL) ||
+      this.isToken(TOKEN.CONST_STR) ||
+      this.isToken(TOKEN.KW_TRUE) ||
+      this.isToken(TOKEN.KW_FALSE) ||
+      this.isToken(TOKEN.OP_NGT) ||
+      this.isToken(TOKEN.OP_NOT) ||
+      this.isToken(TOKEN.OPN_RND_BRACKET)
+    ) {
+      this.parseExp4()
+      this.parseExp3Linha()
+    }
+
+    /* Skip: Panic mode */
+    else {
+      this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseExp3()
+    }
   }
 
   /**
