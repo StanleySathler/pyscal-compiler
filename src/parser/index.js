@@ -112,19 +112,26 @@ module.exports = class Parser {
   }
 
   /**
-   * ListaFuncao2 -> Funcao ListaFuncao2 | epsilon
-   * @todo: fix this logic
+   * ListaFuncaoLinha -> Funcao ListaFuncaoLinha | epsilon
    */
-  parseListaFuncao2() {
+  parseListaFuncaoLinha() {
+    /* ListaFuncaoLinha -> Funcao ListaFuncaoLinha */
+    /* FIRST(Funcao) */
+    if (this.isToken(TOKEN.KW_DEF)) {
+      this.parseFuncao()
+      this.parseListaFuncaoLinha()
+    }
 
-    /* ListaFuncao2 -> epsilon */
-    if (this.__nextReadToken.getName() === TOKEN.KW_DEFSTATIC)
+    /* ListaFuncaoLinha -> epsilon */
+    /* FOLLOW(ListaFuncaoLinha) */
+    else if (this.isToken(TOKEN.KW_DEFSTATIC))
       return
 
-    /* ListaFuncao2 -> Funcao ListaFuncao2 */
+    /* Skip: Panic mode */
     else {
-      this.parseFuncao()
-      this.parseListaFuncao2()
+      this.skip('def')
+      if (!this.isToken(TOKEN.EOF))
+        this.parseListaFuncaoLinha()
     }
   }
 
