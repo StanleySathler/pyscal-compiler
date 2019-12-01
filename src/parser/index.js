@@ -559,20 +559,55 @@ module.exports = class Parser {
     }
 
     /* OpUnario Exp4 */
-    else if (this.match(TOKEN.OP_NGT) || this.match(TOKEN.OP_NE)) {
+    /* FIRST(OpUnario) */
+    else if (
+      this.__nextReadToken.getName() === TOKEN.OP_NGT ||
+      this.__nextReadToken.getName() === TOKEN.OP_NE
+    ) {
       this.parseOpUnario()
       this.parseExp4()
     }
 
     /* ConstInteger | ConstDouble | ConstString | true | false */
     else if (
-      !this.match(TOKEN.CONST_INT) ||
-      !this.match(TOKEN.CONST_DBL) ||
-      !this.match(TOKEN.CONST_STR) ||
-      !this.match(TOKEN.KW_TRUE)   ||
-      !this.match(TOKEN.KW_FALSE)
+      this.match(TOKEN.CONST_INT) ||
+      this.match(TOKEN.CONST_DBL) ||
+      this.match(TOKEN.CONST_STR) ||
+      this.match(TOKEN.KW_TRUE)   ||
+      this.match(TOKEN.KW_FALSE)
     ) {
-      this.addError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+      return
+    }
+
+    else {
+      /* Synch: FOLLOW(Exp4) */
+      if (
+        this.__nextReadToken.getName() === TOKEN.OP_MULT ||
+        this.__nextReadToken.getName() === TOKEN.OP_DIV ||
+        this.__nextReadToken.getName() === TOKEN.OP_SUM ||
+        this.__nextReadToken.getName() === TOKEN.OP_SUB ||
+        this.__nextReadToken.getName() === TOKEN.OP_LT ||
+        this.__nextReadToken.getName() === TOKEN.OP_LTE ||
+        this.__nextReadToken.getName() === TOKEN.OP_GT ||
+        this.__nextReadToken.getName() === TOKEN.OP_GE ||
+        this.__nextReadToken.getName() === TOKEN.OP_EQ ||
+        this.__nextReadToken.getName() === TOKEN.OP_NE ||
+        this.__nextReadToken.getName() === TOKEN.KW_OR ||
+        this.__nextReadToken.getName() === TOKEN.KW_AND ||
+        this.__nextReadToken.getName() === TOKEN.CLS_RND_BRACKET ||
+        this.__nextReadToken.getName() === TOKEN.SEMI_COLON ||
+        this.__nextReadToken.getName() === TOKEN.COMMA
+      ) {
+        this.addError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+        if (this.__nextReadToken.getName() !== TOKEN.EOF)
+          this.parseExp4()
+      }
     }
   }
 
@@ -641,7 +676,7 @@ module.exports = class Parser {
       /* Skip: Panic mode */
       else {
         this.skip('- | !')
-        if (this.__nextReadToken.getName() === TOKEN.EOF)
+        if (this.__nextReadToken.getName() !== TOKEN.EOF)
           this.parseOpUnario()
       }
     }
