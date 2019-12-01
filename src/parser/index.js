@@ -336,7 +336,41 @@ module.exports = class Parser {
   /**
    * CmdAtribFunc -> CmdAtribui | CmdFuncao
    */
-  parseCmdAtribFunc() {}
+  parseCmdAtribFunc() {
+    const expected = '= | ('
+
+    /* CmdAtribFunc -> CmdAtribui */
+    if (this.isToken(TOKEN.OP_EQ))
+      this.parseCmdAtribui()
+
+    /* CmdAtribFunc -> CmdFuncao */
+    else if (this.isToken(TOKEN.OPN_RND_BRACKET))
+      this.parseCmdFuncao()
+
+    else {
+      /* Synch: CmdAtribFunc */
+      /* FOLLOW(CmdAtribFunc) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseCmdAtribFunc()
+      }
+    }
+  }
 
   /**
    * CmdIF -> if ( Expressao ) : ListaCmd CmdIFLinha
@@ -344,6 +378,7 @@ module.exports = class Parser {
   parseCmdIF() {
     const expected = 'if'
 
+    /* CmdIF -> if ( Expressao ) : ListaCmd CmdIFLinha */
     if (this.match(TOKEN.KW_IF)) {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
         this.addError('(')
