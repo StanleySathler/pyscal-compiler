@@ -599,7 +599,7 @@ module.exports = class Parser {
     /* Skip: Panic mode */
     else {
       this.skip('* | / ')
-      if (this.isToken(TOKEN.EOF))
+      if (!this.isToken(TOKEN.EOF))
         this.parseExp3Linha()
     }
   }
@@ -669,7 +669,7 @@ module.exports = class Parser {
       /* Skip: Panic mode */
       else {
         this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
-        if (this.__nextReadToken.getName() !== TOKEN.EOF)
+        if (!this.isToken(TOKEN.EOF))
           this.parseExp4()
       }
     }
@@ -711,7 +711,7 @@ module.exports = class Parser {
     /* Skip: Panic mode */
     else {
       this.skip('( | * | / | + | - | < | <= | > | >= | != | or | and | ) | ; | ,')
-      if (this.__nextReadToken.getName() !== TOKEN.EOF)
+      if (!this.isToken(TOKEN.EOF))
         this.parseExp4Linha()
     }
   }
@@ -740,7 +740,7 @@ module.exports = class Parser {
       /* Skip: Panic mode */
       else {
         this.skip('- | !')
-        if (this.__nextReadToken.getName() !== TOKEN.EOF)
+        if (!this.isToken(TOKEN.EOF))
           this.parseOpUnario()
       }
     }
