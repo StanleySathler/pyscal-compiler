@@ -419,19 +419,45 @@ module.exports = class Parser {
    * CmdWrite -> write ( Expressao ) ;
    */
   parseCmdWrite() {
-    if (!this.match(TOKEN.KW_WRITE))
-      this.addError('parseCmdWrite')
+    const expected = 'write'
 
-    if (!this.match(TOKEN.OPN_RND_BRACKET))
-      this.addError('parseCmdWrite')
+    /* CmdWrite -> write ( Expressao ) ; */
+    if (this.match(TOKEN.KW_WRITE)) {
+      if (!this.match(TOKEN.OPN_RND_BRACKET))
+        this.addError('(')
 
-    this.parseExpressao()
+      this.parseExpressao()
 
-    if (!this.match(TOKEN.CLS_RND_BRACKET))
-      this.addError('parseCmdWrite')
+      if (!this.match(TOKEN.CLS_RND_BRACKET))
+        this.addError(')')
 
-    if (!this.match(TOKEN.SEMI_COLON))
-      this.addError('parseCmdWrite')
+      if (!this.match(TOKEN.SEMI_COLON))
+        this.addError(';')
+    }
+
+    else {
+      /* Synch: CmdWrite */
+      /* FOLLOW(CmdWrite) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseCmdAtribui()
+      }
+    }
   }
 
   /**
