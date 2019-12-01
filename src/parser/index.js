@@ -331,7 +331,49 @@ module.exports = class Parser {
   /**
    * Cmd -> CmdIF | CmdWhile | ID CmdAtribFunc | CmdWrite
    */
-  parseCmd() {}
+  parseCmd() {
+    const expected = 'if | while | ID | write'
+
+    /* Cmd -> CmdIF */
+    if (this.isToken(TOKEN.KW_IF))
+      this.parseCmdIF()
+
+    /* Cmd -> CmdWhile */
+    else if (this.isToken(TOKEN.KW_WHILE))
+      this.parseCmdWhile()
+
+    /* Cmd -> ID CmdAtribFunc */
+    else if (this.match(TOKEN.ID))
+      this.parseCmdAtribFunc()
+
+    /* Cmd -> CmdWrite */
+    else if (this.isToken(TOKEN.KW_WRITE))
+      this.parseCmdWrite()
+
+    else {
+      /* Synch: Cmd */
+      /* FOLLOW(Cmd) */
+      if (
+        this.isToken(TOKEN.KW_IF) ||
+        this.isToken(TOKEN.KW_WHILE) ||
+        this.isToken(TOKEN.ID) ||
+        this.isToken(TOKEN.KW_WRITE) ||
+        this.isToken(TOKEN.KW_RETURN) ||
+        this.isToken(TOKEN.KW_END) ||
+        this.isToken(TOKEN.KW_ELSE)
+      ) {
+        this.addError(expected)
+        return
+      }
+
+      /* Skip: Panic mode */
+      else {
+        this.skip(expected)
+        if (!this.isToken(TOKEN.EOF))
+          this.parseCmd()
+      }
+    }
+  }
 
   /**
    * CmdAtribFunc -> CmdAtribui | CmdFuncao
