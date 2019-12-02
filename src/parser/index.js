@@ -379,13 +379,14 @@ module.exports = class Parser {
   parseArg() {
     const expected = 'bool | integer | String | double | void'
 
+    /* Arg -> TipoPrimitivo ID */
     /* FIRST(TipoPrimitivo) */
     if (
-      this.match(TOKEN.KW_BOOL) ||
-      this.match(TOKEN.KW_INTEGER) ||
-      this.match(TOKEN.KW_STRING) ||
-      this.match(TOKEN.KW_DOUBLE) ||
-      this.match(TOKEN.KW_VOID)
+      this.isToken(TOKEN.KW_BOOL) ||
+      this.isToken(TOKEN.KW_INTEGER) ||
+      this.isToken(TOKEN.KW_STRING) ||
+      this.isToken(TOKEN.KW_DOUBLE) ||
+      this.isToken(TOKEN.KW_VOID)
     ) {
       this.parseTipoPrimitivo()
 
@@ -789,28 +790,6 @@ module.exports = class Parser {
           this.parseCmdIFLinha()
       }
     }
-
-    // if (this.__nextReadToken.getName() === TOKEN.KW_END) {
-    //   this.match(TOKEN.KW_END)
-
-    //   if (!this.match(TOKEN.SEMI_COLON))
-    //     this.addError('parseCmdIFLinha')
-    // }
-
-    // else if (this.__nextReadToken.getName() === TOKEN.KW_ELSE) {
-    //   this.match(TOKEN.KW_ELSE)
-
-    //   if (!this.match(TOKEN.COLON))
-    //     this.addError('parseCmdIFLinha')
-
-    //   this.parseListaCmd()
-
-    //   if (!this.match(TOKEN.KW_END))
-    //     this.addError('parseCmdIFLinha')
-
-    //   if (!this.match(TOKEN.SEMI_COLON))
-    //     this.addError('parseCmdIFLinha')
-    // }
   }
 
   /**
