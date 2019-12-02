@@ -63,8 +63,8 @@ module.exports = class Parser {
 
     this.parseClasse()
 
-    if (!this.match(TOKEN.EOF))
-      this.addError(TOKEN.EOF)
+    if (!this.isToken(TOKEN.EOF))
+      this.addError('$EOF')
   }
 
   /**
