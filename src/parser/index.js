@@ -9,13 +9,19 @@ module.exports = class Parser {
   constructor(lexer) {
     this.__lexer = lexer
     this.__nextReadToken = undefined
+    this.__totalErrors = 0
   }
 
   /**
-   *
+   * Prints an error and controls the maximum of errors
+   * allowed.
    */
   addError(expected) {
-    /* @todo: implement */
+    if (++this.__totalErrors > 5)
+      throw new Exception('[PARSER . ERROR]: Maximum errors reached')
+
+    const currentToken = this.__nextReadToken.getValue()
+    console.log(`[PARSER . ERROR] Expected [${expected}] but found ${currentToken}`)
   }
 
   /**
