@@ -16,7 +16,7 @@ module.exports = class Parser {
    * Prints an error and controls the maximum of errors
    * allowed.
    */
-  addError(expected) {
+  printError(expected) {
     if (++this.__totalErrors > 5)
       throw new Exception('[PARSER . ERROR]: Maximum errors reached')
 
@@ -56,7 +56,7 @@ module.exports = class Parser {
    * current token.
    */
   skip(expected) {
-    this.addError(`Expected [${expected}], got ${this.__nextReadToken.getName()}`)
+    this.printError(`Expected [${expected}], got ${this.__nextReadToken.getName()}`)
     this.advance()
   }
 
@@ -70,7 +70,7 @@ module.exports = class Parser {
     this.parseClasse()
 
     if (!this.isToken(TOKEN.EOF))
-      this.addError('$EOF')
+      this.printError('$EOF')
   }
 
   /**
@@ -82,27 +82,27 @@ module.exports = class Parser {
     /* Classe -> class ID : ListaFuncao Main end . */
     if (this.match(TOKEN.KW_CLASS)) {
       if (!this.match(TOKEN.ID))
-        this.addError('ID')
+        this.printError('ID')
 
       if (!this.match(TOKEN.COLON))
-        this.addError(':')
+        this.printError(':')
 
       this.parseListaFuncao()
 
       this.parseMain()
 
       if (!this.match(TOKEN.KW_END))
-        this.addError('end')
+        this.printError('end')
 
       if (!this.match(TOKEN.DOT))
-        this.addError('.')
+        this.printError('.')
     }
 
     else {
       /* Synch: Classe */
       /* FOLLOW(Classe) */
       if (this.isToken(TOKEN.EOF)) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -133,10 +133,10 @@ module.exports = class Parser {
       this.parseTipoPrimitivo()
 
       if (!this.match(TOKEN.ID))
-        this.addError('ID')
+        this.printError('ID')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
@@ -150,7 +150,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_RETURN) ||
         this.isToken(TOKEN.KW_END)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -190,7 +190,7 @@ module.exports = class Parser {
       /* Synch: ListaFuncao */
       /* FOLLOW(ListaFuncao) */
       if (this.isToken(TOKEN.KW_DEFSTATIC)) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -238,18 +238,18 @@ module.exports = class Parser {
       this.parseTipoPrimitivo()
 
       if (!this.match(TOKEN.ID))
-        this.addError('ID')
+        this.printError('ID')
 
       if (!this.match(TOKEN.OPN_RND_BRACKET))
-        this.addError('(')
+        this.printError('(')
 
       this.parseListaArg()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
 
       if (!this.match(TOKEN.COLON))
-        this.addError(':')
+        this.printError(':')
 
       this.parseRegexDeclaraId()
 
@@ -258,10 +258,10 @@ module.exports = class Parser {
       this.parseRetorno()
 
       if (!this.match(TOKEN.KW_END))
-        this.addError('end')
+        this.printError('end')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
@@ -271,7 +271,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_DEF) ||
         this.isToken(TOKEN.KW_DEFSTATIC)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -344,7 +344,7 @@ module.exports = class Parser {
       /* Synch: ListaArg */
       /* FOLLOW(ListaArg) */
       if (this.isToken(TOKEN.CLS_RND_BRACKET)) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -397,7 +397,7 @@ module.exports = class Parser {
       this.parseTipoPrimitivo()
 
       if (!this.match(TOKEN.ID))
-        this.addError('ID')
+        this.printError('ID')
     }
 
     else {
@@ -407,7 +407,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA) ||
         this.isToken(TOKEN.CLS_RND_BRACKET)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -431,7 +431,7 @@ module.exports = class Parser {
       this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     /* Retorno -> epsilon */
@@ -455,48 +455,48 @@ module.exports = class Parser {
     /* Main -> defstatic void main (String[] ID) : RegexDeclaraId ListaCmd end ; */
     if (this.match(TOKEN.KW_DEFSTATIC)) {
       if (!this.match(TOKEN.KW_VOID))
-        this.addError('void')
+        this.printError('void')
 
       if (!this.match(TOKEN.KW_MAIN))
-        this.addError('main')
+        this.printError('main')
 
       if (!this.match(TOKEN.OPN_RND_BRACKET))
-        this.addError('(')
+        this.printError('(')
 
       if (!this.match(TOKEN.KW_STRING))
-        this.addError('String')
+        this.printError('String')
 
       if (!this.match(TOKEN.OPN_BRACKET))
-        this.addError('[')
+        this.printError('[')
 
       if (!this.match(TOKEN.CLS_BRACKET))
-        this.addError(']')
+        this.printError(']')
 
       if (!this.match(TOKEN.ID))
-        this.addError(TOKEN.ID)
+        this.printError(TOKEN.ID)
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
 
       if (!this.match(TOKEN.COLON))
-        this.addError(':')
+        this.printError(':')
 
       this.parseRegexDeclaraId()
 
       this.parseListaCmd()
 
       if (!this.match(TOKEN.KW_END))
-        this.addError('end')
+        this.printError('end')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
       /* Synch: Main */
       /* FOLLOW(Main) */
       if (this.isToken(TOKEN.KW_END)) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -525,7 +525,7 @@ module.exports = class Parser {
       /* Synch: TipoPrimitivo */
       /* FOLLOW(TipoPrimitivo) */
       if (this.isToken(TOKEN.ID)) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -565,7 +565,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -646,7 +646,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -685,7 +685,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -707,15 +707,15 @@ module.exports = class Parser {
     /* CmdIF -> if ( Expressao ) : ListaCmd CmdIFLinha */
     if (this.match(TOKEN.KW_IF)) {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
-        this.addError('(')
+        this.printError('(')
 
       this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
 
       if (!this.match(TOKEN.COLON))
-        this.addError(':')
+        this.printError(':')
 
       this.parseListaCmd()
 
@@ -734,7 +734,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -756,21 +756,21 @@ module.exports = class Parser {
     /* CmdIFLinha -> end ; */
     if (this.match(TOKEN.KW_END)) {
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     /* CmdIFLinha -> else : ListaCmd end ; */
     else if (this.match(TOKEN.KW_ELSE)) {
       if (!this.match(TOKEN.COLON))
-        this.addError(':')
+        this.printError(':')
 
       this.parseListaCmd()
 
       if (!this.match(TOKEN.KW_END))
-        this.addError('end')
+        this.printError('end')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
@@ -785,7 +785,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -807,23 +807,23 @@ module.exports = class Parser {
     /* CmdWhile -> while ( Expressao ) : ListaCmd end ; */
     if (this.match(TOKEN.KW_WHILE)) {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
-        this.addError('(')
+        this.printError('(')
 
       this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
 
       if (!this.match(TOKEN.COLON))
-        this.addError(':')
+        this.printError(':')
 
       this.parseListaCmd()
 
       if (!this.match(TOKEN.KW_END))
-        this.addError('end')
+        this.printError('end')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
@@ -838,7 +838,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -860,15 +860,15 @@ module.exports = class Parser {
     /* CmdWrite -> write ( Expressao ) ; */
     if (this.match(TOKEN.KW_WRITE)) {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
-        this.addError('(')
+        this.printError('(')
 
       this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
@@ -883,7 +883,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -907,7 +907,7 @@ module.exports = class Parser {
       this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
@@ -922,7 +922,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -943,10 +943,10 @@ module.exports = class Parser {
       this.parseRegexExp()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
 
       if (!this.match(TOKEN.SEMI_COLON))
-        this.addError(';')
+        this.printError(';')
     }
 
     else {
@@ -961,7 +961,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_END) ||
         this.isToken(TOKEN.KW_ELSE)
       ) {
-        this.addError('(')
+        this.printError('(')
         return
       }
 
@@ -1060,7 +1060,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.SEMI_COLON) ||
         this.isToken(TOKEN.COMMA)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -1130,7 +1130,7 @@ module.exports = class Parser {
         this.match(TOKEN.SEMI_COLON) ||
         this.match(TOKEN.COMMA)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -1222,7 +1222,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.SEMI_COLON) ||
         this.isToken(TOKEN.COMMA)
       ) {
-        this.addError(expected)
+        this.printError(expected)
         return
       }
 
@@ -1309,7 +1309,7 @@ module.exports = class Parser {
         this.isToken(TOKEN.SEMI_COLON) ||
         this.isToken(TOKEN.COMMA)
       ) {
-        this.addError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+        this.printError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
         return
       }
 
@@ -1375,7 +1375,7 @@ module.exports = class Parser {
       this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
     }
 
     /* OpUnario Exp4 */
@@ -1418,7 +1418,7 @@ module.exports = class Parser {
         this.__nextReadToken.getName() === TOKEN.SEMI_COLON ||
         this.__nextReadToken.getName() === TOKEN.COMMA
       ) {
-        this.addError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
+        this.printError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
         return
       }
 
@@ -1440,7 +1440,7 @@ module.exports = class Parser {
       this.parseRegexExp()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
-        this.addError(')')
+        this.printError(')')
     }
 
     /* Exp4Linha -> epsilon */
@@ -1489,7 +1489,7 @@ module.exports = class Parser {
         this.match(TOKEN.OP_NOT) ||
         this.match(TOKEN.OPN_RND_BRACKET)
       ) {
-        this.addError('- | !')
+        this.printError('- | !')
         return
       }
 
