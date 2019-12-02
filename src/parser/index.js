@@ -357,17 +357,17 @@ module.exports = class Parser {
   parseListaArgLinha() {
     /* ListaArgLinha -> , ListaArg */
     if (this.match(TOKEN.COMMA)) {
-			this.parseListaArg()
+      this.parseListaArg()
     }
 
     /* ListaArgLinha -> epsilon */
     /* FOLLOW(ListaArgLinha) */
     else if (this.isToken(TOKEN.CLS_RND_BRACKET))
-			return
+      return
 
     /* Skip: Panic mode */
     else {
-			this.skip(', | )');
+      this.skip(', | )');
       if (!this.isToken(TOKEN.EOF))
         this.parseListaArgLinha()
     }
