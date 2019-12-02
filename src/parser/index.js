@@ -9,7 +9,7 @@ module.exports = class Parser {
   constructor(lexer) {
     this.__lexer = lexer
     this.__nextReadToken = undefined
-    this.__totalErrors = 0
+    this.__errors = []
   }
 
   /**
@@ -17,11 +17,14 @@ module.exports = class Parser {
    * allowed.
    */
   printError(expected) {
-    if (++this.__totalErrors > 5)
-      throw new Exception('[PARSER . ERROR]: Maximum errors reached')
-
     const currentToken = this.__nextReadToken.getValue()
-    console.log(`[PARSER . ERROR] Expected [${expected}] but found ${currentToken}`)
+    const message = `[PARSER . ERROR] Expected [${expected}] but found ${currentToken}`
+    console.log(message)
+
+    this.__errors.push(message)
+
+    if (this.__errors.length > 5)
+      throw new Exception('[PARSER . ERROR]: Maximum errors reached')
   }
 
   /**
