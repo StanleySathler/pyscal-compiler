@@ -24,7 +24,7 @@ module.exports = class Parser {
     this.__errors.push(message)
 
     if (this.__errors.length > 5)
-      throw new Exception('[PARSER . ERROR]: Maximum errors reached')
+      throw new Error('[PARSER . ERROR]: Maximum errors reached')
   }
 
   /**
@@ -59,7 +59,7 @@ module.exports = class Parser {
    * current token.
    */
   skip(expected) {
-    this.printError(`Expected [${expected}], got ${this.__nextReadToken.getName()}`)
+    this.printError(expected)
     this.advance()
   }
 
