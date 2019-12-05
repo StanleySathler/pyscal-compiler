@@ -105,10 +105,12 @@ module.exports = class Parser {
 
     /* Classe -> class ID : ListaFuncao Main end . */
     if (this.match(TOKEN.KW_CLASS)) {
+      const currentTokenRef = this.getCurrentToken()
+
       if (this.match(TOKEN.ID))
         this
           .getSymbolTable()
-          .updateTokenType(this.getCurrentToken(), TYPE.void)
+          .updateTokenType(currentTokenRef, TYPE.void)
       else
         this.printError('ID')
 
