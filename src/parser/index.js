@@ -748,14 +748,21 @@ module.exports = class Parser {
    */
   parseCmdAtribFunc() {
     const expected = '= | ('
+    const treeNodeCmdAtribFunc = new TreeNode()
 
     /* CmdAtribFunc -> CmdAtribui */
-    if (this.isToken(TOKEN.OP_EQ))
-      this.parseCmdAtribui()
+    if (this.isToken(TOKEN.OP_EQ)) {
+      const treeNodeCmdAtribui = this.parseCmdAtribui()
+      treeNodeCmdAtribFunc.setType(treeNodeCmdAtribui.getType())
+      return treeNodeCmdAtribFunc
+    }
 
     /* CmdAtribFunc -> CmdFuncao */
-    else if (this.isToken(TOKEN.OPN_RND_BRACKET))
+    else if (this.isToken(TOKEN.OPN_RND_BRACKET)) {
       this.parseCmdFuncao()
+      treeNodeCmdAtribFunc.setType(TYPE.void)
+      return treeNodeCmdAtribFunc
+    }
 
     else {
       /* Synch: CmdAtribFunc */
@@ -770,14 +777,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_ELSE)
       ) {
         this.printError(expected)
-        return
+        return treeNodeCmdAtribFunc
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseCmdAtribFunc()
+          return this.parseCmdAtribFunc()
       }
     }
   }
