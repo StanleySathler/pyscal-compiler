@@ -1633,38 +1633,91 @@ module.exports = class Parser {
    * true | false | OpUnario Exp4 | ( Expressao )
    */
   parseExp4() {
+    const currentTokenRef = this.getCurrentToken()
+    const node = new TreeNode()
 
     /* ID Exp4Linha */
-    if (this.match(TOKEN.ID))
+    if (this.match(TOKEN.ID)) {
       this.parseExp4Linha()
+
+      /* Semantic phase check */
+      const tokenFromSymbolTable = this.getSymbolTable().get(currentTokenRef.getValue())
+      if (!tokenFromSymbolTable) {
+        this.throwSemanticError(`Variable ${currentTokenRef.getValue()} not declared`)
+        node.setType(TYPE.error)
+      }
+
+      else
+        node.setType(tokenFromSymbolTable.getType())
+
+      return node
+    }
 
     /* ( Expressao ) */
     else if (this.match(TOKEN.OPN_RND_BRACKET)) {
-      this.parseExpressao()
+      const nodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
+
+      /* Semantic phase check */
+      node.setType(nodeExpressao.getType())
+
+      return node
     }
 
     /* OpUnario Exp4 */
     /* FIRST(OpUnario) */
     else if (
-      this.__nextReadToken.getName() === TOKEN.OP_NGT ||
-      this.__nextReadToken.getName() === TOKEN.OP_NE
+      this.isToken(TOKEN.OP_NGT) ||
+      this.isToken(TOKEN.OP_NE)
     ) {
-      this.parseOpUnario()
-      this.parseExp4()
+      const nodeOpUnario = this.parseOpUnario()
+      const nodeExp4 = this.parseExp4()
+
+      /* Semantic phase check */
+      if (
+        nodeOpUnario.getType() === nodeExp4.getType() &&
+        nodeOpUnario.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else if (
+        nodeOpUnario.getType() === nodeExp4.getType() &&
+        nodeOpUnario.getType() === TYPE.bool
+      ) {
+        node.setType(TYPE.bool)
+      }
+
+      else
+        node.setType(TYPE.error)
+
+      return node
     }
 
-    /* ConstInteger | ConstDouble | ConstString | true | false */
+    /* ConstInteger | ConstDouble */
     else if (
       this.match(TOKEN.CONST_INT) ||
-      this.match(TOKEN.CONST_DBL) ||
-      this.match(TOKEN.CONST_STR) ||
-      this.match(TOKEN.KW_TRUE)   ||
+      this.match(TOKEN.CONST_DBL)
+    ) {
+      node.setType(TYPE.numerical)
+      return node
+    }
+
+    /* ConstString */
+    else if (this.match(TOKEN.CONST_STR)) {
+      node.setType(TYPE.string)
+      return node
+    }
+
+    /* true | false */
+    else if (
+      this.match(TOKEN.KW_TRUE) ||
       this.match(TOKEN.KW_FALSE)
     ) {
-      return
+      node.setType(TYPE.bool)
+      return node
     }
 
     else {
@@ -1687,14 +1740,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA)
       ) {
         this.printError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
-        return
+        return node
       }
 
       /* Skip: Panic mode */
       else {
         this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
         if (!this.isToken(TOKEN.EOF))
-          this.parseExp4()
+          return this.parseExp4()
       }
     }
   }
