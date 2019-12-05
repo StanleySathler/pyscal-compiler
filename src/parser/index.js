@@ -10,6 +10,8 @@ module.exports = class Parser {
     this.__lexer = lexer
     this.__nextReadToken = undefined
     this.__errors = []
+
+    this.__matchedTokens = []
   }
 
   /**
@@ -50,6 +52,7 @@ module.exports = class Parser {
    */
   match(expectedToken) {
     if (this.isToken(expectedToken)) {
+      this.__matchedTokens.push(this.__nextReadToken.getValue())
       this.advance()
       return true
     }
@@ -202,7 +205,7 @@ module.exports = class Parser {
 
       /* Skip: Panic mode */
       else {
-        this.skip('def')
+        this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
           this.parseListaFuncao()
       }
@@ -1336,7 +1339,10 @@ module.exports = class Parser {
    */
   parseExp3Linha() {
     /* Exp3Linha -> * Exp4 Exp3Linha | / Exp4 Exp3Linha */
-    if (this.isToken(TOKEN.OP_MULT) || this.isToken(TOKEN.OP_DIV)) {
+    if (
+      this.match(TOKEN.OP_MULT) ||
+      this.match(TOKEN.OP_DIV)
+    ) {
       this.parseExp4()
       this.parseExp3Linha()
     }
@@ -1344,19 +1350,19 @@ module.exports = class Parser {
     /* Exp3Linha -> epsilon */
     /* FOLLOW(Exp3Linha) */
     else if (
-      this.__nextReadToken.getName() === TOKEN.OP_SUM ||
-      this.__nextReadToken.getName() === TOKEN.OP_SUB ||
-      this.__nextReadToken.getName() === TOKEN.OP_LT ||
-      this.__nextReadToken.getName() === TOKEN.OP_LTE ||
-      this.__nextReadToken.getName() === TOKEN.OP_GT ||
-      this.__nextReadToken.getName() === TOKEN.OP_GE ||
-      this.__nextReadToken.getName() === TOKEN.OP_EQ ||
-      this.__nextReadToken.getName() === TOKEN.OP_NE ||
-      this.__nextReadToken.getName() === TOKEN.KW_OR ||
-      this.__nextReadToken.getName() === TOKEN.KW_AND ||
-      this.__nextReadToken.getName() === TOKEN.CLS_RND_BRACKET ||
-      this.__nextReadToken.getName() === TOKEN.SEMI_COLON ||
-      this.__nextReadToken.getName() === TOKEN.COMMA
+      this.isToken(TOKEN.OP_SUM) ||
+      this.isToken(TOKEN.OP_SUB) ||
+      this.isToken(TOKEN.OP_LT) ||
+      this.isToken(TOKEN.OP_LTE) ||
+      this.isToken(TOKEN.OP_GT) ||
+      this.isToken(TOKEN.OP_GE) ||
+      this.isToken(TOKEN.OP_EQ) ||
+      this.isToken(TOKEN.OP_NE) ||
+      this.isToken(TOKEN.KW_OR) ||
+      this.isToken(TOKEN.KW_AND) ||
+      this.isToken(TOKEN.CLS_RND_BRACKET) ||
+      this.isToken(TOKEN.SEMI_COLON) ||
+      this.isToken(TOKEN.COMMA)
     ) {
       return
     }
@@ -1453,22 +1459,23 @@ module.exports = class Parser {
     }
 
     /* Exp4Linha -> epsilon */
+    /* FOLLOW(Exp4Linha) */
     else if (
-      this.__nextReadToken.getName() === TOKEN.OP_MULT ||
-      this.__nextReadToken.getName() === TOKEN.OP_DIV ||
-      this.__nextReadToken.getName() === TOKEN.OP_SUM ||
-      this.__nextReadToken.getName() === TOKEN.OP_SUB ||
-      this.__nextReadToken.getName() === TOKEN.OP_LT ||
-      this.__nextReadToken.getName() === TOKEN.OP_LTE ||
-      this.__nextReadToken.getName() === TOKEN.OP_GT ||
-      this.__nextReadToken.getName() === TOKEN.OP_GE ||
-      this.__nextReadToken.getName() === TOKEN.OP_EQ ||
-      this.__nextReadToken.getName() === TOKEN.OP_NE ||
-      this.__nextReadToken.getName() === TOKEN.KW_OR ||
-      this.__nextReadToken.getName() === TOKEN.KW_AND ||
-      this.__nextReadToken.getName() === TOKEN.CLS_RND_BRACKET ||
-      this.__nextReadToken.getName() === TOKEN.SEMI_COLON ||
-      this.__nextReadToken.getName() === TOKEN.COMMA
+      this.isToken(TOKEN.OP_MULT) ||
+      this.isToken(TOKEN.OP_DIV) ||
+      this.isToken(TOKEN.OP_SUM) ||
+      this.isToken(TOKEN.OP_SUB) ||
+      this.isToken(TOKEN.OP_LT) ||
+      this.isToken(TOKEN.OP_LTE) ||
+      this.isToken(TOKEN.OP_GT) ||
+      this.isToken(TOKEN.OP_GE) ||
+      this.isToken(TOKEN.OP_EQ) ||
+      this.isToken(TOKEN.OP_NE) ||
+      this.isToken(TOKEN.KW_OR) ||
+      this.isToken(TOKEN.KW_AND) ||
+      this.isToken(TOKEN.CLS_RND_BRACKET) ||
+      this.isToken(TOKEN.SEMI_COLON) ||
+      this.isToken(TOKEN.COMMA)
     ) {
       return
     }
