@@ -800,10 +800,13 @@ module.exports = class Parser {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
         this.printError('(')
 
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
+
+      if (treeNodeExpressao.getType() !== TYPE.bool)
+        this.throwSemanticError('Condition must result in a bool value')
 
       if (!this.match(TOKEN.COLON))
         this.printError(':')
@@ -900,10 +903,13 @@ module.exports = class Parser {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
         this.printError('(')
 
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
+
+      if (treeNodeExpressao.getType() !== TYPE.bool)
+        this.throwSemanticError('Condition must result in a bool value')
 
       if (!this.match(TOKEN.COLON))
         this.printError(':')
@@ -953,13 +959,16 @@ module.exports = class Parser {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
         this.printError('(')
 
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
 
       if (!this.match(TOKEN.SEMI_COLON))
         this.printError(';')
+
+      if (treeNodeExpressao.getType() !== TYPE.string)
+        this.throwSemanticError('Expression must be a string')
     }
 
     else {
