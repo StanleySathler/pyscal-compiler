@@ -108,7 +108,7 @@ module.exports = class Parser {
       if (this.match(TOKEN.ID))
         this
           .getSymbolTable()
-          .setTokenType(this.getCurrentToken(), TYPE.void)
+          .updateTokenType(this.getCurrentToken(), TYPE.void)
       else
         this.printError('ID')
 

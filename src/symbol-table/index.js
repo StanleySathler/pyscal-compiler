@@ -64,12 +64,11 @@ module.exports = class SymbolTable {
   }
 
   /**
-   * Set the given token's type.
-   *
-   * @param {*} token
+   * Update the property type of the given token.
    */
-  setTokenType(token, type) {
-    this.get(token.getValue()).setType(type)
+  updateTokenType(token, type) {
+    const lexem = token.getValue()
+    this.get(lexem).setType(type)
   }
 
   /**
