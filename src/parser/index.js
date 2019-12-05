@@ -1001,13 +1001,17 @@ module.exports = class Parser {
    */
   parseCmdAtribui() {
     const expected = '='
+    const treeNodeCmdAtribui = new TreeNode()
 
     /* CmdAtribui -> = Expressao ; */
     if (this.match(TOKEN.OP_EQ)) {
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
         this.printError(';')
+
+      treeNodeCmdAtribui.setType(treeNodeExpressao.getType())
+      return treeNodeCmdAtribui
     }
 
     else {
@@ -1023,14 +1027,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_ELSE)
       ) {
         this.printError(expected)
-        return
+        return treeNodeCmdAtribui
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseCmdAtribui()
+          return this.parseCmdAtribui()
       }
     }
   }
