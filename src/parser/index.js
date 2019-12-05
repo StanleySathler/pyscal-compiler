@@ -3,6 +3,7 @@
  * a Top-Down implementation for LL(1) grammars.
  */
 
+const TreeNode = require('../node')
 const TOKEN = require('../token/names')
 const TYPE = require('../types')
 
@@ -465,18 +466,24 @@ module.exports = class Parser {
    */
   parseRetorno() {
     const expected = 'return | end'
+    const treeNodeRetorno = new TreeNode()
 
     /* Retorno -> return Expressao ; */
     if (this.match(TOKEN.KW_RETURN)) {
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
         this.printError(';')
+
+      treeNodeRetorno.setType(treeNodeExpressao.getType())
+      return treeNodeRetorno
     }
 
     /* Retorno -> epsilon */
-    else if (this.isToken(TOKEN.KW_END))
-      return
+    else if (this.isToken(TOKEN.KW_END)) {
+      treeNodeRetorno.setType(TYPE.void)
+      return treeNodeRetorno
+    }
 
     /* Skip: Panic mode */
     else {
