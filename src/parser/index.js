@@ -519,7 +519,13 @@ module.exports = class Parser {
       if (!this.match(TOKEN.CLS_BRACKET))
         this.printError(']')
 
-      if (!this.match(TOKEN.ID))
+      const idTokenRef = this.getCurrentToken()
+
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(idTokenRef, TYPE.string)
+      else
         this.printError(TOKEN.ID)
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
