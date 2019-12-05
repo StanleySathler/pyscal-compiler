@@ -688,6 +688,8 @@ module.exports = class Parser {
    */
   parseCmd() {
     const expected = 'if | while | ID | write'
+    const currentTokenRef = this.getCurrentToken()
+    const currentTokenLexem = currentTokenRef.getValue()
 
     /* Cmd -> CmdIF */
     if (this.isToken(TOKEN.KW_IF))
@@ -698,8 +700,19 @@ module.exports = class Parser {
       this.parseCmdWhile()
 
     /* Cmd -> ID CmdAtribFunc */
-    else if (this.match(TOKEN.ID))
-      this.parseCmdAtribFunc()
+    else if (this.match(TOKEN.ID)) {
+      if (!this.getSymbolTable().has(currentTokenLexem))
+        this.throwSemanticError(`Variable ${currentTokenLexem} not declared`)
+
+      const treeNodeCmdAtribFunc = this.parseCmdAtribFunc()
+
+      if (
+        treeNodeCmdAtribFunc.getType() !== TYPE.void &&
+        this.getSymbolTable().get(currentTokenLexem) &&
+        this.getSymbolTable().get(currentTokenLexem).getType() !== treeNodeCmdAtribFunc.getType()
+      )
+        this.throwSemanticError(`Can't assign two variables of different types`)
+    }
 
     /* Cmd -> CmdWrite */
     else if (this.isToken(TOKEN.KW_WRITE))
