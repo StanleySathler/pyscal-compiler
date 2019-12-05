@@ -262,9 +262,14 @@ module.exports = class Parser {
 
     /* Funcao -> def TipoPrimitivo ID ( ListaArg ) : RegexDeclaraId ListaCmd Retorno end ; */
     if (this.match(TOKEN.KW_DEF)) {
-      this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
+      const tokenTipoPrimitivo = this.parseTipoPrimitivo()
 
-      if (!this.match(TOKEN.ID))
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(currentTokenRef, tokenTipoPrimitivo.getType())
+      else
         this.printError('ID')
 
       if (!this.match(TOKEN.OPN_RND_BRACKET))
@@ -282,7 +287,10 @@ module.exports = class Parser {
 
       this.parseListaCmd()
 
-      this.parseRetorno()
+      const tokenRetorno = this.parseRetorno()
+
+      if (tokenRetorno.getType() !== tokenTipoPrimitivo.getType())
+        this.throwSemanticError('Incompatible return type')
 
       if (!this.match(TOKEN.KW_END))
         this.printError('end')
