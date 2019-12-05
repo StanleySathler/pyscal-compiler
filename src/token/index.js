@@ -23,6 +23,10 @@ class Token {
     return this.__column
   }
 
+  getType() {
+    return this.__type
+  }
+
   setType(type) {
     return this.__type = type
   }
