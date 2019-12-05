@@ -17,8 +17,11 @@ module.exports = class Parser {
    * allowed.
    */
   printError(expected) {
-    const currentToken = this.__nextReadToken.getValue()
-    const message = `[PARSER . ERROR] Expected [${expected}] but found ${currentToken}`
+    const currentToken = this.__nextReadToken
+    const lexem = currentToken.getValue()
+    const line = currentToken.getLine()
+    const column = currentToken.getColumn()
+    const message = `(Syntatic Error) Ln ${line}, Col ${column}: Expected " ${expected} " but found " ${lexem} "`
     console.log(message)
 
     this.__errors.push(message)
@@ -1108,16 +1111,19 @@ module.exports = class Parser {
    * Exp1 -> Exp2 Exp1Linha
    */
   parseExp1() {
-    const expected = '< | <= | > | >= | == | !='
+    const expected = 'ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | ('
 
     /* FIRST(Exp2) */
     if (
-      this.match(TOKEN.OP_LT) ||
-      this.match(TOKEN.OP_LTE) ||
-      this.match(TOKEN.OP_GT) ||
-      this.match(TOKEN.OP_GE) ||
-      this.match(TOKEN.OP_EQ) ||
-      this.match(TOKEN.OP_NE)
+      this.isToken(TOKEN.ID) ||
+      this.isToken(TOKEN.CONST_INT) ||
+      this.isToken(TOKEN.CONST_DBL) ||
+      this.isToken(TOKEN.CONST_STR) ||
+      this.isToken(TOKEN.KW_TRUE) ||
+      this.isToken(TOKEN.KW_FALSE) ||
+      this.isToken(TOKEN.OP_NGT) ||
+      this.isToken(TOKEN.OP_NOT) ||
+      this.isToken(TOKEN.OPN_RND_BRACKET)
     ) {
       this.parseExp2()
       this.parseExp1Linha()
@@ -1127,11 +1133,11 @@ module.exports = class Parser {
       /* Synch: Exp1 */
       /* FOLLOW(Exp1) */
       if (
-        this.match(TOKEN.KW_OR) ||
-        this.match(TOKEN.KW_AND) ||
-        this.match(TOKEN.CLS_RND_BRACKET) ||
-        this.match(TOKEN.SEMI_COLON) ||
-        this.match(TOKEN.COMMA)
+        this.isToken(TOKEN.KW_OR) ||
+        this.isToken(TOKEN.KW_AND) ||
+        this.isToken(TOKEN.CLS_RND_BRACKET) ||
+        this.isToken(TOKEN.SEMI_COLON) ||
+        this.isToken(TOKEN.COMMA)
       ) {
         this.printError(expected)
         return
