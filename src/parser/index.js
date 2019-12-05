@@ -162,12 +162,12 @@ module.exports = class Parser {
       this.isToken(TOKEN.KW_VOID)
     ) {
       const currentTokenRef = this.getCurrentToken()
-      const tokenTipoPrimitivo = this.parseTipoPrimitivo()
+      const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
 
       if (this.match(TOKEN.ID))
         this
           .getSymbolTable()
-          .updateTokenType(currentTokenRef, tokenTipoPrimitivo.getType())
+          .updateTokenType(currentTokenRef, treeNodeTipoPrimitivo.getType())
       else
         this.printError('ID')
 
@@ -264,12 +264,12 @@ module.exports = class Parser {
     /* Funcao -> def TipoPrimitivo ID ( ListaArg ) : RegexDeclaraId ListaCmd Retorno end ; */
     if (this.match(TOKEN.KW_DEF)) {
       const currentTokenRef = this.getCurrentToken()
-      const tokenTipoPrimitivo = this.parseTipoPrimitivo()
+      const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
 
       if (this.match(TOKEN.ID))
         this
           .getSymbolTable()
-          .updateTokenType(currentTokenRef, tokenTipoPrimitivo.getType())
+          .updateTokenType(currentTokenRef, treeNodeTipoPrimitivo.getType())
       else
         this.printError('ID')
 
@@ -288,9 +288,9 @@ module.exports = class Parser {
 
       this.parseListaCmd()
 
-      const tokenRetorno = this.parseRetorno()
+      const treeNodeRetorno = this.parseRetorno()
 
-      if (tokenRetorno.getType() !== tokenTipoPrimitivo.getType())
+      if (treeNodeRetorno.getType() !== treeNodeTipoPrimitivo.getType())
         this.throwSemanticError('Incompatible return type')
 
       if (!this.match(TOKEN.KW_END))
@@ -431,12 +431,12 @@ module.exports = class Parser {
       this.isToken(TOKEN.KW_VOID)
     ) {
       const currentTokenRef = this.getCurrentToken()
-      const tokenTipoPrimitivo = this.parseTipoPrimitivo()
+      const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
 
       if (this.match(TOKEN.ID))
         this
           .getSymbolTable()
-          .updateTokenType(currentTokenRef, tokenTipoPrimitivo.getType())
+          .updateTokenType(currentTokenRef, treeNodeTipoPrimitivo.getType())
       else
         this.printError('ID')
     }
