@@ -4,6 +4,7 @@
  */
 
 const TOKEN = require('../token/names')
+const TYPE = require('../types')
 
 module.exports = class Parser {
   constructor(lexer) {
@@ -12,6 +13,13 @@ module.exports = class Parser {
     this.__errors = []
 
     this.__matchedTokens = []
+  }
+
+  /**
+   * Gets the symbol table from the lexer.
+   */
+  getSymbolTable() {
+    return this.__lexer.getSymbolTable()
   }
 
   /**
@@ -33,10 +41,17 @@ module.exports = class Parser {
   }
 
   /**
+   * Gets the current token.
+   */
+  getCurrentToken() {
+    return this.__nextReadToken
+  }
+
+  /**
    * Check if current token is equal to the given one.
    */
   isToken(token) {
-    return this.__nextReadToken.getName() === token
+    return this.getCurrentToken().getName() === token
   }
 
   /**
@@ -90,7 +105,11 @@ module.exports = class Parser {
 
     /* Classe -> class ID : ListaFuncao Main end . */
     if (this.match(TOKEN.KW_CLASS)) {
-      if (!this.match(TOKEN.ID))
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .setTokenType(this.getCurrentToken(), TYPE.void)
+      else
         this.printError('ID')
 
       if (!this.match(TOKEN.COLON))

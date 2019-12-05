@@ -4,6 +4,7 @@ class Token {
     this.__value = value
     this.__line = line
     this.__column = column
+    this.__type = null
   }
 
   getName() {
@@ -20,6 +21,10 @@ class Token {
 
   getColumn() {
     return this.__column
+  }
+
+  setType(type) {
+    return this.__type = type
   }
 
   toString() {

@@ -64,6 +64,15 @@ module.exports = class SymbolTable {
   }
 
   /**
+   * Set the given token's type.
+   *
+   * @param {*} token
+   */
+  setTokenType(token, type) {
+    this.get(token.getValue()).setType(type)
+  }
+
+  /**
    * Get all symbols.
    */
   getSymbols() {
