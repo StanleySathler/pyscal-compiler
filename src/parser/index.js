@@ -1499,6 +1499,8 @@ module.exports = class Parser {
    * Exp3 -> Exp4 Exp3Linha
    */
   parseExp3() {
+    const node = new TreeNode()
+
     /* FIRST(Exp4) */
     if (
       this.isToken(TOKEN.ID) ||
@@ -1511,8 +1513,24 @@ module.exports = class Parser {
       this.isToken(TOKEN.OP_NOT) ||
       this.isToken(TOKEN.OPN_RND_BRACKET)
     ) {
-      this.parseExp4()
-      this.parseExp3Linha()
+      const nodeExp4 = this.parseExp4()
+      const nodeExp3Linha = this.parseExp3Linha()
+
+      /* Semantic phase check */
+      if (nodeExp3Linha.getType() === TYPE.void)
+        node.setType(nodeExp4.getType())
+
+      else if (
+        nodeExp4.getType() === nodeExp3Linha.getType() &&
+        nodeExp3Linha.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else
+        node.setType(TYPE.error)
+
+      return node
     }
 
     else {
@@ -1534,14 +1552,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA)
       ) {
         this.printError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
-        return
+        return node
       }
 
       /* Skip: Panic mode */
       else {
         this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
         if (!this.isToken(TOKEN.EOF))
-          this.parseExp3()
+          return this.parseExp3()
       }
     }
   }
