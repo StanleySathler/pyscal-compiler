@@ -429,9 +429,14 @@ module.exports = class Parser {
       this.isToken(TOKEN.KW_DOUBLE) ||
       this.isToken(TOKEN.KW_VOID)
     ) {
-      this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
+      const tokenTipoPrimitivo = this.parseTipoPrimitivo()
 
-      if (!this.match(TOKEN.ID))
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(currentTokenRef, tokenTipoPrimitivo.getType())
+      else
         this.printError('ID')
     }
 
