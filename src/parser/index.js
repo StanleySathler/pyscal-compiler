@@ -1309,6 +1309,8 @@ module.exports = class Parser {
    * >= Exp2 Exp1Linha | == Exp2 Exp1Linha | != Exp2 Exp1Linha | epsilon
    */
   parseExp1Linha() {
+    const treeNodeExp1Linha = new TreeNode()
+
     /*
      * Exp1Linha -> < Exp2 Exp1Linha | <= Exp2 Exp1Linha | > Exp2 Exp1Linha |
      * >= Exp2 Exp1Linha | == Exp2 Exp1Linha | != Exp2 Exp1Linha
@@ -1321,8 +1323,28 @@ module.exports = class Parser {
       this.match(TOKEN.OP_EQ) ||
       this.match(TOKEN.OP_NE)
     ) {
-      this.parseExp2()
-      this.parseExp1Linha()
+      const treeNodeExp2 = this.parseExp2()
+      const treeNodeExp1Linha2 = this.parseExp1Linha()
+
+      /* Semantic phase check */
+      if (
+        treeNodeExp1Linha2.getType() === TYPE.void &&
+        treeNodeExp2.getType() === TYPE.numerical
+      ) {
+        treeNodeExp1Linha.setType(TYPE.numerical)
+      }
+
+      else if (
+        treeNodeExp1Linha2.getType() === treeNodeExp2.getType() &&
+        treeNodeExp2.getType() === TYPE.numerical
+      ) {
+        treeNodeExp1Linha.setType(TYPE.numerical)
+      }
+
+      else
+        treeNodeExp1Linha.setType(TYPE.error)
+
+      return treeNodeExp1Linha
     }
 
     /* Exp1Linha -> epsilon */
@@ -1334,14 +1356,15 @@ module.exports = class Parser {
       this.isToken(TOKEN.SEMI_COLON) ||
       this.isToken(TOKEN.COMMA)
     ) {
-      return
+      treeNodeExp1Linha.setType(TYPE.void)
+      return treeNodeExp1Linha
     }
 
     /* Skip: Panic mode */
     else {
       this.skip('< | <= | > | >= | == | != | or | and | ) | ; | ,')
       if (!this.isToken(TOKEN.EOF))
-        this.parseExp1Linha()
+        return this.parseExp1Linha()
     }
   }
 
