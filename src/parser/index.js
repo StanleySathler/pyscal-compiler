@@ -489,7 +489,7 @@ module.exports = class Parser {
     else {
       this.skip(expected)
       if (!this.isToken(TOKEN.EOF))
-        this.parseRetorno()
+        return this.parseRetorno()
     }
   }
 
@@ -597,14 +597,14 @@ module.exports = class Parser {
       /* FOLLOW(TipoPrimitivo) */
       if (this.isToken(TOKEN.ID)) {
         this.printError(expected)
-        return
+        return treeNodeTipoPrimitivo
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseTipoPrimitivo()
+          return this.parseTipoPrimitivo()
       }
     }
   }
