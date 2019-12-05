@@ -1230,6 +1230,7 @@ module.exports = class Parser {
       this.isToken(TOKEN.SEMI_COLON) ||
       this.isToken(TOKEN.COMMA)
     ) {
+      treeNodeExpLinha.setType(TYPE.void)
       return treeNodeExpLinha
     }
 
