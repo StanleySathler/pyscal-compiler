@@ -162,10 +162,12 @@ module.exports = class Lexer {
           this.resetLexem()
           this.resetState()
           this.backCursor()
-          const token = this.addToken(TOKEN_NAMES.ID, lexem)
+
+          let token = this.getSymbolTable().get(lexem)
 
           /* Not added to the Symbol Table yet */
-          if (!this.getSymbolTable().has(lexem)) {
+          if (!token) {
+            token = this.addToken(TOKEN_NAMES.ID, lexem)
             this.getSymbolTable().set(lexem, token)
           }
 

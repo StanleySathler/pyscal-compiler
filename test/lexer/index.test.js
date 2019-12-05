@@ -22,35 +22,35 @@ describe('Given a Lexer', () => {
 
     it('should generate the correct tokens', () => {
       const expected = [
-        new Token(TOKEN_NAMES.ID, 'class', 4, 6),
+        new Token(TOKEN_NAMES.KW_CLASS, 'class', 0, 0),
         new Token(TOKEN_NAMES.ID, 'CodeSample01', 4, 19),
         new Token(TOKEN_NAMES.COLON, ':', 4, 20),
 
-        new Token(TOKEN_NAMES.ID, 'defstatic', 5, 12),
-        new Token(TOKEN_NAMES.ID, 'void', 5, 17),
-        new Token(TOKEN_NAMES.ID, 'main', 5, 22),
+        new Token(TOKEN_NAMES.KW_DEFSTATIC, 'defstatic', 0, 0),
+        new Token(TOKEN_NAMES.KW_VOID, 'void', 0, 0),
+        new Token(TOKEN_NAMES.KW_MAIN, 'main', 0, 0),
         new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 5, 23),
-        new Token(TOKEN_NAMES.ID, 'String', 5, 29),
+        new Token(TOKEN_NAMES.KW_STRING, 'String', 0, 0),
         new Token(TOKEN_NAMES.OPN_BRACKET, '[', 5, 30),
         new Token(TOKEN_NAMES.CLS_BRACKET, ']', 5, 31),
         new Token(TOKEN_NAMES.ID, 'args', 5, 36),
         new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 5, 37),
         new Token(TOKEN_NAMES.COLON, ':', 5, 38),
 
-        new Token(TOKEN_NAMES.ID, 'double', 6, 11),
+        new Token(TOKEN_NAMES.KW_DOUBLE, 'double', 0, 0),
         new Token(TOKEN_NAMES.ID, 'age', 6, 15),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 6, 16),
 
-        new Token(TOKEN_NAMES.ID, 'double', 7, 11),
+        new Token(TOKEN_NAMES.KW_DOUBLE, 'double', 0, 0),
         new Token(TOKEN_NAMES.ID, 'points', 7, 18),
         new Token(TOKEN_NAMES.OP_ASG, '=', 7, 20),
         new Token(TOKEN_NAMES.OP_NGT, '-', 7, 22),
         new Token(TOKEN_NAMES.CONST_INT, '4', 7, 23),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 7, 24),
 
-        new Token(TOKEN_NAMES.ID, 'if', 9, 7),
+        new Token(TOKEN_NAMES.KW_IF, 'if', 0, 0),
         new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 9, 9),
-        new Token(TOKEN_NAMES.ID, 'age', 9, 12),
+        new Token(TOKEN_NAMES.ID, 'age', 6, 15),
         new Token(TOKEN_NAMES.OP_EQ, '==', 9, 15),
         new Token(TOKEN_NAMES.CONST_DBL, '8.8', 9, 19),
         new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 9, 20),
@@ -60,7 +60,7 @@ describe('Given a Lexer', () => {
         new Token(TOKEN_NAMES.OPN_RND_BRACKET, '(', 10, 13),
         new Token(TOKEN_NAMES.CONST_STR, 'Compiler', 10, 23),
         new Token(TOKEN_NAMES.COMMA, ',', 10, 24),
-        new Token(TOKEN_NAMES.ID, 'age', 10, 28),
+        new Token(TOKEN_NAMES.ID, 'age', 6, 15),
         new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 10, 29),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 10, 30),
 
@@ -69,13 +69,13 @@ describe('Given a Lexer', () => {
         new Token(TOKEN_NAMES.CLS_RND_BRACKET, ')', 11, 15),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 11, 16),
 
-        new Token(TOKEN_NAMES.ID, 'end', 12, 8),
+        new Token(TOKEN_NAMES.KW_END, 'end', 0, 0),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 12, 9),
 
-        new Token(TOKEN_NAMES.ID, 'end', 13, 6),
+        new Token(TOKEN_NAMES.KW_END, 'end', 0, 0),
         new Token(TOKEN_NAMES.SEMI_COLON, ';', 13, 7),
 
-        new Token(TOKEN_NAMES.ID, 'end', 14, 4),
+        new Token(TOKEN_NAMES.KW_END, 'end', 0, 0),
         new Token(TOKEN_NAMES.DOT, '.', 14, 5),
 
         new Token(TOKEN_NAMES.EOF, 'EOF', 15, 1)

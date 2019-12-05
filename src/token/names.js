@@ -79,59 +79,59 @@ module.exports = {
   EOF: 'EOF',
 
   /* Keyword: 'class' */
-  KW_CLASS: 'class',
+  KW_CLASS: 'KW_CLASS',
 
   /* Keyword: 'end' */
-  KW_END: 'end',
+  KW_END: 'KW_END',
 
   /* Keyword: 'def' */
-  KW_DEF: 'def',
+  KW_DEF: 'KW_DEF',
 
   /* Keyword: 'defstatic' */
-  KW_DEFSTATIC: 'defstatic',
+  KW_DEFSTATIC: 'KW_DEFSTATIC',
 
   /* Keyword: 'return' */
-  KW_RETURN: 'return',
+  KW_RETURN: 'KW_RETURN',
 
   /* Keyword: 'main' */
-  KW_MAIN: 'main',
+  KW_MAIN: 'KW_MAIN',
 
   /* Keyword: 'void' */
-  KW_VOID: 'void',
+  KW_VOID: 'KW_VOID',
 
   /* Keyword: 'String' */
-  KW_STRING: 'String',
+  KW_STRING: 'KW_STRING',
 
   /* Keyword: 'bool' */
-  KW_BOOL: 'bool',
+  KW_BOOL: 'KW_BOOL',
 
   /* Keyword: 'integer' */
-  KW_INTEGER: 'integer',
+  KW_INTEGER: 'KW_INTEGER',
 
   /* Keyword: 'double' */
-  KW_DOUBLE: 'double',
+  KW_DOUBLE: 'KW_DOUBLE',
 
   /* Keyword: 'true' */
-  KW_TRUE: 'true',
+  KW_TRUE: 'KW_TRUE',
 
   /* Keyword: 'false' */
-  KW_FALSE: 'false',
+  KW_FALSE: 'KW_FALSE',
 
   /* Keyword: 'if' */
-  KW_IF: 'if',
+  KW_IF: 'KW_IF',
 
   /* Keyword: 'else' */
-  KW_ELSE: 'else',
+  KW_ELSE: 'KW_ELSE',
 
   /* Keyword: 'or' */
-  KW_OR: 'or',
+  KW_OR: 'KW_OR',
 
   /* Keyword: 'and' */
-  KW_AND: 'and',
+  KW_AND: 'KW_AND',
 
   /* Keyword: 'while' */
-  KW_WHILE: 'while',
+  KW_WHILE: 'KW_WHILE',
 
   /* Keyword: 'write' */
-  KW_WRITE: 'write',
+  KW_WRITE: 'KW_WRITE',
 }
