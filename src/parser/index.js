@@ -567,14 +567,32 @@ module.exports = class Parser {
    */
   parseTipoPrimitivo() {
     const expected = 'bool | integer | String | double | void'
+    const treeNodeTipoPrimitivo = new TreeNode()
 
-    if (
-      !this.match(TOKEN.KW_BOOL) &&
-      !this.match(TOKEN.KW_INTEGER) &&
-      !this.match(TOKEN.KW_STRING) &&
-      !this.match(TOKEN.KW_DOUBLE) &&
-      !this.match(TOKEN.KW_VOID)
+    if (this.match(TOKEN.KW_BOOL)) {
+      treeNodeTipoPrimitivo.setType(TYPE.bool)
+      return treeNodeTipoPrimitivo
+    }
+
+    else if (this.match(TOKEN.KW_STRING)) {
+      treeNodeTipoPrimitivo.setType(TYPE.string)
+      return treeNodeTipoPrimitivo
+    }
+
+    else if (
+      this.match(TOKEN.KW_DOUBLE) ||
+      this.match(TOKEN.KW_INTEGER)
     ) {
+      treeNodeTipoPrimitivo.setType(TYPE.numerical)
+      return treeNodeTipoPrimitivo
+    }
+
+    else if (this.match(TOKEN.KW_VOID)) {
+      treeNodeTipoPrimitivo.setType(TYPE.void)
+      return treeNodeTipoPrimitivo
+    }
+
+    else {
       /* Synch: TipoPrimitivo */
       /* FOLLOW(TipoPrimitivo) */
       if (this.isToken(TOKEN.ID)) {
