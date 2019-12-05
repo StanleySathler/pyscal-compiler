@@ -1417,21 +1417,21 @@ module.exports = class Parser {
     else {
       /* Synch: FOLLOW(Exp4) */
       if (
-        this.__nextReadToken.getName() === TOKEN.OP_MULT ||
-        this.__nextReadToken.getName() === TOKEN.OP_DIV ||
-        this.__nextReadToken.getName() === TOKEN.OP_SUM ||
-        this.__nextReadToken.getName() === TOKEN.OP_SUB ||
-        this.__nextReadToken.getName() === TOKEN.OP_LT ||
-        this.__nextReadToken.getName() === TOKEN.OP_LTE ||
-        this.__nextReadToken.getName() === TOKEN.OP_GT ||
-        this.__nextReadToken.getName() === TOKEN.OP_GE ||
-        this.__nextReadToken.getName() === TOKEN.OP_EQ ||
-        this.__nextReadToken.getName() === TOKEN.OP_NE ||
-        this.__nextReadToken.getName() === TOKEN.KW_OR ||
-        this.__nextReadToken.getName() === TOKEN.KW_AND ||
-        this.__nextReadToken.getName() === TOKEN.CLS_RND_BRACKET ||
-        this.__nextReadToken.getName() === TOKEN.SEMI_COLON ||
-        this.__nextReadToken.getName() === TOKEN.COMMA
+        this.isToken(TOKEN.OP_MULT) ||
+        this.isToken(TOKEN.OP_DIV) ||
+        this.isToken(TOKEN.OP_SUM) ||
+        this.isToken(TOKEN.OP_SUB) ||
+        this.isToken(TOKEN.OP_LT) ||
+        this.isToken(TOKEN.OP_LTE) ||
+        this.isToken(TOKEN.OP_GT) ||
+        this.isToken(TOKEN.OP_GE) ||
+        this.isToken(TOKEN.OP_EQ) ||
+        this.isToken(TOKEN.OP_NE) ||
+        this.isToken(TOKEN.KW_OR) ||
+        this.isToken(TOKEN.KW_AND) ||
+        this.isToken(TOKEN.CLS_RND_BRACKET) ||
+        this.isToken(TOKEN.SEMI_COLON) ||
+        this.isToken(TOKEN.COMMA)
       ) {
         this.printError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
         return
