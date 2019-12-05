@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/index.js",
-      "args": ["./test/mocks/code-sample-01.pys"]
+      "args": ["./test/mocks/parser/invalid-code-sample-01.pys"]
     }
   ]
 }
