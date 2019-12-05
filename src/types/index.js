@@ -3,4 +3,5 @@ module.exports = {
   string: 'string',
   bool: 'bool',
   numerical: 'numerical',
+  error: 'error',
 }
