@@ -1440,10 +1440,32 @@ module.exports = class Parser {
    * Exp2Linha -> + Exp3 Exp2Linha | - Exp3 Exp2Linha | epsilon
    */
   parseExp2Linha() {
+    const node = new TreeNode()
+
     /* Exp2Linha -> + Exp3 Exp2Linha | - Exp3 Exp2Linha */
     if (this.match(TOKEN.OP_SUM) || this.match(TOKEN.OP_SUB)) {
-      this.parseExp3()
-      this.parseExp2Linha()
+      const nodeExp3 = this.parseExp3()
+      const nodeExp2Linha = this.parseExp2Linha()
+
+      /* Semantic phase check */
+      if (
+        nodeExp2Linha.getType() === TYPE.void &&
+        nodeExp3.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else if (
+        nodeExp2Linha.getType() === nodeExp3.getType() &&
+        nodeExp3.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else
+        node.setType(TYPE.error)
+
+      return node
     }
 
     /* Exp2Linha -> epsilon */
@@ -1461,14 +1483,15 @@ module.exports = class Parser {
       this.isToken(TOKEN.SEMI_COLON) ||
       this.isToken(TOKEN.COMMA)
     ) {
-      return
+      node.setType(TYPE.void)
+      return node
     }
 
     /* Skip: Panic mode */
     else {
       this.skip('+ | -')
       if (!this.isToken(TOKEN.EOF))
-        this.parseExp2Linha()
+        return this.parseExp2Linha()
     }
   }
 
