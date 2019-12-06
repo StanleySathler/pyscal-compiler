@@ -1798,7 +1798,19 @@ module.exports = class Parser {
    * OpUnario -> - | !
    */
   parseOpUnario() {
-    if (!this.match(TOKEN.OP_NGT) && !this.match(TOKEN.OP_NOT)) {
+    const node = new TreeNode()
+
+    if (this.match(TOKEN.OP_NGT)) {
+      node.setType(TYPE.numerical)
+      return node
+    }
+
+    else if (this.match(TOKEN.OP_NOT)) {
+      node.setType(TYPE.bool)
+      return node
+    }
+
+    else {
       /* Synch: FOLLOW(OpUnario) */
       if (
         this.match(TOKEN.ID) ||
@@ -1812,14 +1824,14 @@ module.exports = class Parser {
         this.match(TOKEN.OPN_RND_BRACKET)
       ) {
         this.printError('- | !')
-        return
+        return node
       }
 
       /* Skip: Panic mode */
       else {
         this.skip('- | !')
         if (!this.isToken(TOKEN.EOF))
-          this.parseOpUnario()
+          return this.parseOpUnario()
       }
     }
   }
