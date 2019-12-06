@@ -258,7 +258,7 @@ module.exports = class Parser {
 
     /* Skip: Panic mode */
     else {
-      this.skip('def')
+      this.skip('def | defstatic')
       if (!this.isToken(TOKEN.EOF))
         this.parseListaFuncaoLinha()
     }
@@ -686,7 +686,7 @@ module.exports = class Parser {
 
     /* Skip: Panic mode */
     else {
-      this.skip('if | while | ID | write')
+      this.skip('if | while | ID | write | return | end | else')
       if (!this.isToken(TOKEN.EOF))
         this.parseListaCmdLinha()
     }
@@ -1499,7 +1499,7 @@ module.exports = class Parser {
 
     /* Skip: Panic mode */
     else {
-      this.skip('+ | -')
+      this.skip('+ | - | < | <= | > | >= | == | != | or | and | ) | ; | ,')
       if (!this.isToken(TOKEN.EOF))
         return this.parseExp2Linha()
     }
@@ -1632,7 +1632,7 @@ module.exports = class Parser {
 
     /* Skip: Panic mode */
     else {
-      this.skip('* | / ')
+      this.skip('* | / | + | - | < | <= | > | >= | == | != | or | and | ) | ; | ,')
       if (!this.isToken(TOKEN.EOF))
         return this.parseExp3Linha()
     }
