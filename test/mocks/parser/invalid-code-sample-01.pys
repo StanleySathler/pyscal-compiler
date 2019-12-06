@@ -4,9 +4,7 @@ class Pressao2:
 
   defstatic void main(String[] args):
     write("Caros alunos de Compiladores,");
-    write("");
     write("Este eh um codigo de exemplo em Pyscal!");
-    write("");
 
     if(podeEntregarDepois(true)):
       write("Pode, mas nao tem ponto.");
