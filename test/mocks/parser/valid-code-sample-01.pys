@@ -1,0 +1,18 @@
+class Pressao:
+  #teste
+
+  def bool podeEntregarDepois(integer x):
+    return false;
+  end;
+
+  defstatic void main(String[] args):
+   write("Caros alunos de Compiladores,");
+   write("a");
+   write("Este eh um codigo de exemplo em Pyscal!");
+   write("a");
+
+   if(podeEntregarDepois(3)):
+    write("Pode, mas nao tem ponto.");
+   end;
+  end;
+ end.
