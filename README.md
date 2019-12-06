@@ -28,4 +28,8 @@ Once all dependencies are installed, all you have to do is type the following co
 
 ```sh
 $ npm start path/to/your/source/file.pys
+
+#### OR (if you prefer)
+
+$ node index.js path/to/your/source/file.pys
 ```
