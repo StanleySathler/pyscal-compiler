@@ -24,6 +24,18 @@ module.exports = class Parser {
   }
 
   /**
+   * Prints a semantic error.
+   */
+  throwSemanticError(message) {
+    console.error(`(Semantic Error): ${message}`)
+
+    this.__errors.push(message)
+
+    if (this.__errors.length > 5)
+      throw new Error('[PARSER . ERROR]: Maximum errors reached')
+  }
+
+  /**
    * Prints an error and controls the maximum of errors
    * allowed.
    */
