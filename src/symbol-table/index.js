@@ -64,6 +64,14 @@ module.exports = class SymbolTable {
   }
 
   /**
+   * Update the property type of the given token.
+   */
+  updateTokenType(token, type) {
+    const lexem = token.getValue()
+    this.get(lexem).setType(type)
+  }
+
+  /**
    * Get all symbols.
    */
   getSymbols() {

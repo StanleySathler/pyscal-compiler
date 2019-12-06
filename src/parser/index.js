@@ -3,7 +3,9 @@
  * a Top-Down implementation for LL(1) grammars.
  */
 
+const TreeNode = require('../node')
 const TOKEN = require('../token/names')
+const TYPE = require('../types')
 
 module.exports = class Parser {
   constructor(lexer) {
@@ -12,6 +14,25 @@ module.exports = class Parser {
     this.__errors = []
 
     this.__matchedTokens = []
+  }
+
+  /**
+   * Gets the symbol table from the lexer.
+   */
+  getSymbolTable() {
+    return this.__lexer.getSymbolTable()
+  }
+
+  /**
+   * Prints a semantic error.
+   */
+  throwSemanticError(message) {
+    console.error(`(Semantic Error): ${message}`)
+
+    this.__errors.push(message)
+
+    if (this.__errors.length > 5)
+      throw new Error('[PARSER . ERROR]: Maximum errors reached')
   }
 
   /**
@@ -33,10 +54,17 @@ module.exports = class Parser {
   }
 
   /**
+   * Gets the current token.
+   */
+  getCurrentToken() {
+    return this.__nextReadToken
+  }
+
+  /**
    * Check if current token is equal to the given one.
    */
   isToken(token) {
-    return this.__nextReadToken.getName() === token
+    return this.getCurrentToken().getName() === token
   }
 
   /**
@@ -90,7 +118,13 @@ module.exports = class Parser {
 
     /* Classe -> class ID : ListaFuncao Main end . */
     if (this.match(TOKEN.KW_CLASS)) {
-      if (!this.match(TOKEN.ID))
+      const currentTokenRef = this.getCurrentToken()
+
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(currentTokenRef, TYPE.void)
+      else
         this.printError('ID')
 
       if (!this.match(TOKEN.COLON))
@@ -139,9 +173,14 @@ module.exports = class Parser {
       this.isToken(TOKEN.KW_DOUBLE) ||
       this.isToken(TOKEN.KW_VOID)
     ) {
-      this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
+      const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
 
-      if (!this.match(TOKEN.ID))
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(currentTokenRef, treeNodeTipoPrimitivo.getType())
+      else
         this.printError('ID')
 
       if (!this.match(TOKEN.SEMI_COLON))
@@ -170,14 +209,6 @@ module.exports = class Parser {
           this.parseDeclaraID()
       }
     }
-
-    // this.parseTipoPrimitivo()
-
-    // if (!this.match(TOKEN.ID))
-    //   this.addError(TOKEN.ID)
-
-    // if (!this.match(TOKEN.SEMI_COLON))
-    //   this.addError(TOKEN.SEMI_COLON)
   }
 
   /**
@@ -244,9 +275,14 @@ module.exports = class Parser {
 
     /* Funcao -> def TipoPrimitivo ID ( ListaArg ) : RegexDeclaraId ListaCmd Retorno end ; */
     if (this.match(TOKEN.KW_DEF)) {
-      this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
+      const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
 
-      if (!this.match(TOKEN.ID))
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(currentTokenRef, treeNodeTipoPrimitivo.getType())
+      else
         this.printError('ID')
 
       if (!this.match(TOKEN.OPN_RND_BRACKET))
@@ -264,7 +300,10 @@ module.exports = class Parser {
 
       this.parseListaCmd()
 
-      this.parseRetorno()
+      const treeNodeRetorno = this.parseRetorno()
+
+      if (treeNodeRetorno.getType() !== treeNodeTipoPrimitivo.getType())
+        this.throwSemanticError('Incompatible return type')
 
       if (!this.match(TOKEN.KW_END))
         this.printError('end')
@@ -403,9 +442,14 @@ module.exports = class Parser {
       this.isToken(TOKEN.KW_DOUBLE) ||
       this.isToken(TOKEN.KW_VOID)
     ) {
-      this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
+      const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
 
-      if (!this.match(TOKEN.ID))
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(currentTokenRef, treeNodeTipoPrimitivo.getType())
+      else
         this.printError('ID')
     }
 
@@ -434,24 +478,30 @@ module.exports = class Parser {
    */
   parseRetorno() {
     const expected = 'return | end'
+    const treeNodeRetorno = new TreeNode()
 
     /* Retorno -> return Expressao ; */
     if (this.match(TOKEN.KW_RETURN)) {
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
         this.printError(';')
+
+      treeNodeRetorno.setType(treeNodeExpressao.getType())
+      return treeNodeRetorno
     }
 
     /* Retorno -> epsilon */
-    else if (this.isToken(TOKEN.KW_END))
-      return
+    else if (this.isToken(TOKEN.KW_END)) {
+      treeNodeRetorno.setType(TYPE.void)
+      return treeNodeRetorno
+    }
 
     /* Skip: Panic mode */
     else {
       this.skip(expected)
       if (!this.isToken(TOKEN.EOF))
-        this.parseRetorno()
+        return this.parseRetorno()
     }
   }
 
@@ -481,7 +531,13 @@ module.exports = class Parser {
       if (!this.match(TOKEN.CLS_BRACKET))
         this.printError(']')
 
-      if (!this.match(TOKEN.ID))
+      const idTokenRef = this.getCurrentToken()
+
+      if (this.match(TOKEN.ID))
+        this
+          .getSymbolTable()
+          .updateTokenType(idTokenRef, TYPE.string)
+      else
         this.printError(TOKEN.ID)
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
@@ -523,26 +579,44 @@ module.exports = class Parser {
    */
   parseTipoPrimitivo() {
     const expected = 'bool | integer | String | double | void'
+    const treeNodeTipoPrimitivo = new TreeNode()
 
-    if (
-      !this.match(TOKEN.KW_BOOL) &&
-      !this.match(TOKEN.KW_INTEGER) &&
-      !this.match(TOKEN.KW_STRING) &&
-      !this.match(TOKEN.KW_DOUBLE) &&
-      !this.match(TOKEN.KW_VOID)
+    if (this.match(TOKEN.KW_BOOL)) {
+      treeNodeTipoPrimitivo.setType(TYPE.bool)
+      return treeNodeTipoPrimitivo
+    }
+
+    else if (this.match(TOKEN.KW_STRING)) {
+      treeNodeTipoPrimitivo.setType(TYPE.string)
+      return treeNodeTipoPrimitivo
+    }
+
+    else if (
+      this.match(TOKEN.KW_DOUBLE) ||
+      this.match(TOKEN.KW_INTEGER)
     ) {
+      treeNodeTipoPrimitivo.setType(TYPE.numerical)
+      return treeNodeTipoPrimitivo
+    }
+
+    else if (this.match(TOKEN.KW_VOID)) {
+      treeNodeTipoPrimitivo.setType(TYPE.void)
+      return treeNodeTipoPrimitivo
+    }
+
+    else {
       /* Synch: TipoPrimitivo */
       /* FOLLOW(TipoPrimitivo) */
       if (this.isToken(TOKEN.ID)) {
         this.printError(expected)
-        return
+        return treeNodeTipoPrimitivo
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseTipoPrimitivo()
+          return this.parseTipoPrimitivo()
       }
     }
   }
@@ -626,6 +700,8 @@ module.exports = class Parser {
    */
   parseCmd() {
     const expected = 'if | while | ID | write'
+    const currentTokenRef = this.getCurrentToken()
+    const currentTokenLexem = currentTokenRef.getValue()
 
     /* Cmd -> CmdIF */
     if (this.isToken(TOKEN.KW_IF))
@@ -636,8 +712,19 @@ module.exports = class Parser {
       this.parseCmdWhile()
 
     /* Cmd -> ID CmdAtribFunc */
-    else if (this.match(TOKEN.ID))
-      this.parseCmdAtribFunc()
+    else if (this.match(TOKEN.ID)) {
+      if (!this.getSymbolTable().has(currentTokenLexem))
+        this.throwSemanticError(`Variable ${currentTokenLexem} not declared`)
+
+      const treeNodeCmdAtribFunc = this.parseCmdAtribFunc()
+
+      if (
+        treeNodeCmdAtribFunc.getType() !== TYPE.void &&
+        this.getSymbolTable().get(currentTokenLexem) &&
+        this.getSymbolTable().get(currentTokenLexem).getType() !== treeNodeCmdAtribFunc.getType()
+      )
+        this.throwSemanticError(`Can't assign two variables of different types`)
+    }
 
     /* Cmd -> CmdWrite */
     else if (this.isToken(TOKEN.KW_WRITE))
@@ -673,14 +760,21 @@ module.exports = class Parser {
    */
   parseCmdAtribFunc() {
     const expected = '= | ('
+    const treeNodeCmdAtribFunc = new TreeNode()
 
     /* CmdAtribFunc -> CmdAtribui */
-    if (this.isToken(TOKEN.OP_EQ))
-      this.parseCmdAtribui()
+    if (this.isToken(TOKEN.OP_EQ)) {
+      const treeNodeCmdAtribui = this.parseCmdAtribui()
+      treeNodeCmdAtribFunc.setType(treeNodeCmdAtribui.getType())
+      return treeNodeCmdAtribFunc
+    }
 
     /* CmdAtribFunc -> CmdFuncao */
-    else if (this.isToken(TOKEN.OPN_RND_BRACKET))
+    else if (this.isToken(TOKEN.OPN_RND_BRACKET)) {
       this.parseCmdFuncao()
+      treeNodeCmdAtribFunc.setType(TYPE.void)
+      return treeNodeCmdAtribFunc
+    }
 
     else {
       /* Synch: CmdAtribFunc */
@@ -695,14 +789,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_ELSE)
       ) {
         this.printError(expected)
-        return
+        return treeNodeCmdAtribFunc
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseCmdAtribFunc()
+          return this.parseCmdAtribFunc()
       }
     }
   }
@@ -718,10 +812,13 @@ module.exports = class Parser {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
         this.printError('(')
 
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
+
+      if (treeNodeExpressao.getType() !== TYPE.bool)
+        this.throwSemanticError('Condition must result in a bool value')
 
       if (!this.match(TOKEN.COLON))
         this.printError(':')
@@ -818,10 +915,13 @@ module.exports = class Parser {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
         this.printError('(')
 
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
+
+      if (treeNodeExpressao.getType() !== TYPE.bool)
+        this.throwSemanticError('Condition must result in a bool value')
 
       if (!this.match(TOKEN.COLON))
         this.printError(':')
@@ -871,13 +971,16 @@ module.exports = class Parser {
       if (!this.match(TOKEN.OPN_RND_BRACKET))
         this.printError('(')
 
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
 
       if (!this.match(TOKEN.SEMI_COLON))
         this.printError(';')
+
+      if (treeNodeExpressao.getType() !== TYPE.string)
+        this.throwSemanticError('Expression must be a string')
     }
 
     else {
@@ -910,13 +1013,17 @@ module.exports = class Parser {
    */
   parseCmdAtribui() {
     const expected = '='
+    const treeNodeCmdAtribui = new TreeNode()
 
     /* CmdAtribui -> = Expressao ; */
     if (this.match(TOKEN.OP_EQ)) {
-      this.parseExpressao()
+      const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
         this.printError(';')
+
+      treeNodeCmdAtribui.setType(treeNodeExpressao.getType())
+      return treeNodeCmdAtribui
     }
 
     else {
@@ -932,14 +1039,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.KW_ELSE)
       ) {
         this.printError(expected)
-        return
+        return treeNodeCmdAtribui
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseCmdAtribui()
+          return this.parseCmdAtribui()
       }
     }
   }
@@ -1044,6 +1151,7 @@ module.exports = class Parser {
    */
   parseExpressao() {
     const expected = 'ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | ('
+    const treeNodeExpressao = new TreeNode()
 
     /* FIRST(Exp1) */
     if (
@@ -1057,8 +1165,21 @@ module.exports = class Parser {
       this.isToken(TOKEN.OP_NOT) ||
       this.isToken(TOKEN.OPN_RND_BRACKET)
     ) {
-      this.parseExp1()
-      this.parseExpLinha()
+      const treeNodeExp1 = this.parseExp1()
+      const treeNodeExpLinha = this.parseExpLinha()
+
+      /* Semantic phase check */
+      if (treeNodeExpLinha.getType() === TYPE.void)
+        treeNodeExpressao.setType(treeNodeExp1.getType())
+      else if (
+        treeNodeExpLinha.getType() === treeNodeExp1.getType() &&
+        treeNodeExpLinha.getType() === TYPE.bool
+      )
+        treeNodeExpressao.setType(TYPE.bool)
+      else
+        treeNodeExpressao.setType(TYPE.error)
+
+      return treeNodeExpressao
     }
 
     else {
@@ -1070,14 +1191,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA)
       ) {
         this.printError(expected)
-        return
+        return treeNodeExpressao
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseExpressao()
+          return this.parseExpressao()
       }
     }
   }
@@ -1086,10 +1207,32 @@ module.exports = class Parser {
    * ExpLinha -> or Exp1 ExpLinha | and Exp1 ExpLinha | epsilon
    */
   parseExpLinha() {
+    const treeNodeExpLinha = new TreeNode()
+
     /* ExpLinha -> or Exp1 ExpLinha | and Exp1 ExpLinha */
     if (this.match(TOKEN.KW_OR) || this.match(TOKEN.KW_AND)) {
-      this.parseExp1()
-      this.parseExpLinha()
+      const treeNodeExp1 = this.parseExp1()
+      const treeNodeExpLinha2 = this.parseExpLinha()
+
+      /* Semantic phase check */
+      if (
+        treeNodeExpLinha2.getType() === TYPE.void &&
+        treeNodeExp1.getType() === TYPE.bool
+      ) {
+        treeNodeExpLinha.setType(TYPE.bool)
+      }
+
+      else if (
+        treeNodeExpLinha2.getType() === treeNodeExp1.getType() &&
+        treeNodeExp1.getType() === TYPE.bool
+      ) {
+        treeNodeExpLinha.setType(TYPE.bool)
+      }
+
+      else
+        treeNodeExpLinha.setType(TYPE.error)
+
+      return treeNodeExpLinha
     }
 
     /* ExpLinha -> epsilon */
@@ -1099,14 +1242,15 @@ module.exports = class Parser {
       this.isToken(TOKEN.SEMI_COLON) ||
       this.isToken(TOKEN.COMMA)
     ) {
-      return
+      treeNodeExpLinha.setType(TYPE.void)
+      return treeNodeExpLinha
     }
 
     /* Skip: Panic mode */
     else {
       this.skip('or | and | ) | ; | ,')
       if (!this.isToken(TOKEN.EOF))
-        this.parseExpLinha()
+        return this.parseExpLinha()
     }
   }
 
@@ -1115,6 +1259,7 @@ module.exports = class Parser {
    */
   parseExp1() {
     const expected = 'ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | ('
+    const treeNodeExp1 = new TreeNode()
 
     /* FIRST(Exp2) */
     if (
@@ -1128,8 +1273,24 @@ module.exports = class Parser {
       this.isToken(TOKEN.OP_NOT) ||
       this.isToken(TOKEN.OPN_RND_BRACKET)
     ) {
-      this.parseExp2()
-      this.parseExp1Linha()
+      const treeNodeExp2 = this.parseExp2()
+      const treeNodeExp1Linha = this.parseExp1Linha()
+
+      /* Semantic phase check */
+      if (treeNodeExp1Linha.getType() === TYPE.void)
+        treeNodeExp1.setType(treeNodeExp2.getType())
+
+      else if (
+        treeNodeExp2.getType() === treeNodeExp1Linha.getType() &&
+        treeNodeExp2.getType() === TYPE.numerical
+      ) {
+        treeNodeExp1.setType(TYPE.bool)
+      }
+
+      else
+        treeNodeExp1.setType(TYPE.error)
+
+      return treeNodeExp1
     }
 
     else {
@@ -1143,14 +1304,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA)
       ) {
         this.printError(expected)
-        return
+        return treeNodeExp1
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseExp1()
+          return this.parseExp1()
       }
     }
   }
@@ -1160,6 +1321,8 @@ module.exports = class Parser {
    * >= Exp2 Exp1Linha | == Exp2 Exp1Linha | != Exp2 Exp1Linha | epsilon
    */
   parseExp1Linha() {
+    const treeNodeExp1Linha = new TreeNode()
+
     /*
      * Exp1Linha -> < Exp2 Exp1Linha | <= Exp2 Exp1Linha | > Exp2 Exp1Linha |
      * >= Exp2 Exp1Linha | == Exp2 Exp1Linha | != Exp2 Exp1Linha
@@ -1172,8 +1335,28 @@ module.exports = class Parser {
       this.match(TOKEN.OP_EQ) ||
       this.match(TOKEN.OP_NE)
     ) {
-      this.parseExp2()
-      this.parseExp1Linha()
+      const treeNodeExp2 = this.parseExp2()
+      const treeNodeExp1Linha2 = this.parseExp1Linha()
+
+      /* Semantic phase check */
+      if (
+        treeNodeExp1Linha2.getType() === TYPE.void &&
+        treeNodeExp2.getType() === TYPE.numerical
+      ) {
+        treeNodeExp1Linha.setType(TYPE.numerical)
+      }
+
+      else if (
+        treeNodeExp1Linha2.getType() === treeNodeExp2.getType() &&
+        treeNodeExp2.getType() === TYPE.numerical
+      ) {
+        treeNodeExp1Linha.setType(TYPE.numerical)
+      }
+
+      else
+        treeNodeExp1Linha.setType(TYPE.error)
+
+      return treeNodeExp1Linha
     }
 
     /* Exp1Linha -> epsilon */
@@ -1185,14 +1368,15 @@ module.exports = class Parser {
       this.isToken(TOKEN.SEMI_COLON) ||
       this.isToken(TOKEN.COMMA)
     ) {
-      return
+      treeNodeExp1Linha.setType(TYPE.void)
+      return treeNodeExp1Linha
     }
 
     /* Skip: Panic mode */
     else {
       this.skip('< | <= | > | >= | == | != | or | and | ) | ; | ,')
       if (!this.isToken(TOKEN.EOF))
-        this.parseExp1Linha()
+        return this.parseExp1Linha()
     }
   }
 
@@ -1201,6 +1385,7 @@ module.exports = class Parser {
    */
   parseExp2() {
     const expected = 'ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | ('
+    const treeNodeExp2 = new TreeNode()
 
     /* FIRST(Exp3) */
     if (
@@ -1214,8 +1399,24 @@ module.exports = class Parser {
       this.isToken(TOKEN.OP_NOT) ||
       this.isToken(TOKEN.OPN_RND_BRACKET)
     ) {
-      this.parseExp3()
-      this.parseExp2Linha()
+      const treeNodeExp3 = this.parseExp3()
+      const treeNodeExp2Linha = this.parseExp2Linha()
+
+      /* Semantic phase check */
+      if (treeNodeExp2Linha.getType() === TYPE.void)
+        treeNodeExp2.setType(treeNodeExp3.getType())
+
+      else if (
+        treeNodeExp2Linha.getType() === treeNodeExp3.getType() &&
+        treeNodeExp2Linha.getType() === TYPE.numerical
+      ) {
+        treeNodeExp2.setType(TYPE.numerical)
+      }
+
+      else
+        treeNodeExp2.setType(TYPE.error)
+
+      return treeNodeExp2
     }
 
     else {
@@ -1235,14 +1436,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA)
       ) {
         this.printError(expected)
-        return
+        return treeNodeExp2
       }
 
       /* Skip: Panic mode */
       else {
         this.skip(expected)
         if (!this.isToken(TOKEN.EOF))
-          this.parseExp2()
+          return this.parseExp2()
       }
     }
   }
@@ -1251,10 +1452,32 @@ module.exports = class Parser {
    * Exp2Linha -> + Exp3 Exp2Linha | - Exp3 Exp2Linha | epsilon
    */
   parseExp2Linha() {
+    const node = new TreeNode()
+
     /* Exp2Linha -> + Exp3 Exp2Linha | - Exp3 Exp2Linha */
     if (this.match(TOKEN.OP_SUM) || this.match(TOKEN.OP_SUB)) {
-      this.parseExp3()
-      this.parseExp2Linha()
+      const nodeExp3 = this.parseExp3()
+      const nodeExp2Linha = this.parseExp2Linha()
+
+      /* Semantic phase check */
+      if (
+        nodeExp2Linha.getType() === TYPE.void &&
+        nodeExp3.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else if (
+        nodeExp2Linha.getType() === nodeExp3.getType() &&
+        nodeExp3.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else
+        node.setType(TYPE.error)
+
+      return node
     }
 
     /* Exp2Linha -> epsilon */
@@ -1272,14 +1495,15 @@ module.exports = class Parser {
       this.isToken(TOKEN.SEMI_COLON) ||
       this.isToken(TOKEN.COMMA)
     ) {
-      return
+      node.setType(TYPE.void)
+      return node
     }
 
     /* Skip: Panic mode */
     else {
       this.skip('+ | -')
       if (!this.isToken(TOKEN.EOF))
-        this.parseExp2Linha()
+        return this.parseExp2Linha()
     }
   }
 
@@ -1287,6 +1511,8 @@ module.exports = class Parser {
    * Exp3 -> Exp4 Exp3Linha
    */
   parseExp3() {
+    const node = new TreeNode()
+
     /* FIRST(Exp4) */
     if (
       this.isToken(TOKEN.ID) ||
@@ -1299,8 +1525,24 @@ module.exports = class Parser {
       this.isToken(TOKEN.OP_NOT) ||
       this.isToken(TOKEN.OPN_RND_BRACKET)
     ) {
-      this.parseExp4()
-      this.parseExp3Linha()
+      const nodeExp4 = this.parseExp4()
+      const nodeExp3Linha = this.parseExp3Linha()
+
+      /* Semantic phase check */
+      if (nodeExp3Linha.getType() === TYPE.void)
+        node.setType(nodeExp4.getType())
+
+      else if (
+        nodeExp4.getType() === nodeExp3Linha.getType() &&
+        nodeExp3Linha.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else
+        node.setType(TYPE.error)
+
+      return node
     }
 
     else {
@@ -1322,14 +1564,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA)
       ) {
         this.printError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
-        return
+        return node
       }
 
       /* Skip: Panic mode */
       else {
         this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
         if (!this.isToken(TOKEN.EOF))
-          this.parseExp3()
+          return this.parseExp3()
       }
     }
   }
@@ -1338,13 +1580,35 @@ module.exports = class Parser {
    * Exp3Linha -> * Exp4 Exp3Linha | / Exp4 Exp3Linha | epsilon
    */
   parseExp3Linha() {
+    const node = new TreeNode()
+
     /* Exp3Linha -> * Exp4 Exp3Linha | / Exp4 Exp3Linha */
     if (
       this.match(TOKEN.OP_MULT) ||
       this.match(TOKEN.OP_DIV)
     ) {
-      this.parseExp4()
-      this.parseExp3Linha()
+      const nodeExp4 = this.parseExp4()
+      const nodeExp3Linha = this.parseExp3Linha()
+
+      /* Semantic phase check */
+      if (
+        nodeExp3Linha.getType() === TYPE.void &&
+        nodeExp4.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else if (
+        nodeExp3Linha.getType() === nodeExp4.getType() &&
+        nodeExp4.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else
+        node.setType(TYPE.error)
+
+      return node
     }
 
     /* Exp3Linha -> epsilon */
@@ -1364,14 +1628,15 @@ module.exports = class Parser {
       this.isToken(TOKEN.SEMI_COLON) ||
       this.isToken(TOKEN.COMMA)
     ) {
-      return
+      node.setType(TYPE.void)
+      return node
     }
 
     /* Skip: Panic mode */
     else {
       this.skip('* | / ')
       if (!this.isToken(TOKEN.EOF))
-        this.parseExp3Linha()
+        return this.parseExp3Linha()
     }
   }
 
@@ -1380,38 +1645,91 @@ module.exports = class Parser {
    * true | false | OpUnario Exp4 | ( Expressao )
    */
   parseExp4() {
+    const currentTokenRef = this.getCurrentToken()
+    const node = new TreeNode()
 
     /* ID Exp4Linha */
-    if (this.match(TOKEN.ID))
+    if (this.match(TOKEN.ID)) {
       this.parseExp4Linha()
+
+      /* Semantic phase check */
+      const tokenFromSymbolTable = this.getSymbolTable().get(currentTokenRef.getValue())
+      if (!tokenFromSymbolTable) {
+        this.throwSemanticError(`Variable ${currentTokenRef.getValue()} not declared`)
+        node.setType(TYPE.error)
+      }
+
+      else
+        node.setType(tokenFromSymbolTable.getType())
+
+      return node
+    }
 
     /* ( Expressao ) */
     else if (this.match(TOKEN.OPN_RND_BRACKET)) {
-      this.parseExpressao()
+      const nodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.CLS_RND_BRACKET))
         this.printError(')')
+
+      /* Semantic phase check */
+      node.setType(nodeExpressao.getType())
+
+      return node
     }
 
     /* OpUnario Exp4 */
     /* FIRST(OpUnario) */
     else if (
-      this.__nextReadToken.getName() === TOKEN.OP_NGT ||
-      this.__nextReadToken.getName() === TOKEN.OP_NE
+      this.isToken(TOKEN.OP_NGT) ||
+      this.isToken(TOKEN.OP_NE)
     ) {
-      this.parseOpUnario()
-      this.parseExp4()
+      const nodeOpUnario = this.parseOpUnario()
+      const nodeExp4 = this.parseExp4()
+
+      /* Semantic phase check */
+      if (
+        nodeOpUnario.getType() === nodeExp4.getType() &&
+        nodeOpUnario.getType() === TYPE.numerical
+      ) {
+        node.setType(TYPE.numerical)
+      }
+
+      else if (
+        nodeOpUnario.getType() === nodeExp4.getType() &&
+        nodeOpUnario.getType() === TYPE.bool
+      ) {
+        node.setType(TYPE.bool)
+      }
+
+      else
+        node.setType(TYPE.error)
+
+      return node
     }
 
-    /* ConstInteger | ConstDouble | ConstString | true | false */
+    /* ConstInteger | ConstDouble */
     else if (
       this.match(TOKEN.CONST_INT) ||
-      this.match(TOKEN.CONST_DBL) ||
-      this.match(TOKEN.CONST_STR) ||
-      this.match(TOKEN.KW_TRUE)   ||
+      this.match(TOKEN.CONST_DBL)
+    ) {
+      node.setType(TYPE.numerical)
+      return node
+    }
+
+    /* ConstString */
+    else if (this.match(TOKEN.CONST_STR)) {
+      node.setType(TYPE.string)
+      return node
+    }
+
+    /* true | false */
+    else if (
+      this.match(TOKEN.KW_TRUE) ||
       this.match(TOKEN.KW_FALSE)
     ) {
-      return
+      node.setType(TYPE.bool)
+      return node
     }
 
     else {
@@ -1434,14 +1752,14 @@ module.exports = class Parser {
         this.isToken(TOKEN.COMMA)
       ) {
         this.printError('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
-        return
+        return node
       }
 
       /* Skip: Panic mode */
       else {
         this.skip('ID | ConstInteger | ConstDouble | ConstString | true | false | - | ! | (')
         if (!this.isToken(TOKEN.EOF))
-          this.parseExp4()
+          return this.parseExp4()
       }
     }
   }
@@ -1492,7 +1810,19 @@ module.exports = class Parser {
    * OpUnario -> - | !
    */
   parseOpUnario() {
-    if (!this.match(TOKEN.OP_NGT) && !this.match(TOKEN.OP_NOT)) {
+    const node = new TreeNode()
+
+    if (this.match(TOKEN.OP_NGT)) {
+      node.setType(TYPE.numerical)
+      return node
+    }
+
+    else if (this.match(TOKEN.OP_NOT)) {
+      node.setType(TYPE.bool)
+      return node
+    }
+
+    else {
       /* Synch: FOLLOW(OpUnario) */
       if (
         this.match(TOKEN.ID) ||
@@ -1506,14 +1836,14 @@ module.exports = class Parser {
         this.match(TOKEN.OPN_RND_BRACKET)
       ) {
         this.printError('- | !')
-        return
+        return node
       }
 
       /* Skip: Panic mode */
       else {
         this.skip('- | !')
         if (!this.isToken(TOKEN.EOF))
-          this.parseOpUnario()
+          return this.parseOpUnario()
       }
     }
   }
