@@ -108,6 +108,8 @@ module.exports = class Parser {
 
     if (!this.isToken(TOKEN.EOF))
       this.printError('$EOF')
+
+    console.log('[+] Compiled successfully!')
   }
 
   /**
@@ -173,8 +175,8 @@ module.exports = class Parser {
       this.isToken(TOKEN.KW_DOUBLE) ||
       this.isToken(TOKEN.KW_VOID)
     ) {
-      const currentTokenRef = this.getCurrentToken()
       const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
 
       if (this.match(TOKEN.ID))
         this
@@ -275,8 +277,8 @@ module.exports = class Parser {
 
     /* Funcao -> def TipoPrimitivo ID ( ListaArg ) : RegexDeclaraId ListaCmd Retorno end ; */
     if (this.match(TOKEN.KW_DEF)) {
-      const currentTokenRef = this.getCurrentToken()
       const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
 
       if (this.match(TOKEN.ID))
         this
@@ -442,8 +444,8 @@ module.exports = class Parser {
       this.isToken(TOKEN.KW_DOUBLE) ||
       this.isToken(TOKEN.KW_VOID)
     ) {
-      const currentTokenRef = this.getCurrentToken()
       const treeNodeTipoPrimitivo = this.parseTipoPrimitivo()
+      const currentTokenRef = this.getCurrentToken()
 
       if (this.match(TOKEN.ID))
         this
