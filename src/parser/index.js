@@ -1106,6 +1106,7 @@ module.exports = class Parser {
       this.isToken(TOKEN.OP_NOT) ||
       this.isToken(TOKEN.OPN_RND_BRACKET)
     ) {
+      this.parseExpressao()
       this.parseRegexExpLinha()
     }
 
