@@ -1,3 +1,7 @@
+**Author: Stanley Sathler Pinto**
+
+----
+
 # Pyscal Compiler
 
 Pyscal is a basic programming language, built for learning purposes. Its main goal is to serve as a target language for building a compiler.
