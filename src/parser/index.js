@@ -760,7 +760,7 @@ module.exports = class Parser {
     const treeNodeCmdAtribFunc = new TreeNode()
 
     /* CmdAtribFunc -> CmdAtribui */
-    if (this.isToken(TOKEN.OP_EQ)) {
+    if (this.isToken(TOKEN.OP_ASG)) {
       const treeNodeCmdAtribui = this.parseCmdAtribui()
       treeNodeCmdAtribFunc.setType(treeNodeCmdAtribui.getType())
       return treeNodeCmdAtribFunc
@@ -905,7 +905,7 @@ module.exports = class Parser {
    * CmdWhile -> while ( Expressao ) : ListaCmd end ;
    */
   parseCmdWhile() {
-    expected = 'while'
+    const expected = 'while'
 
     /* CmdWhile -> while ( Expressao ) : ListaCmd end ; */
     if (this.match(TOKEN.KW_WHILE)) {
@@ -1013,7 +1013,7 @@ module.exports = class Parser {
     const treeNodeCmdAtribui = new TreeNode()
 
     /* CmdAtribui -> = Expressao ; */
-    if (this.match(TOKEN.OP_EQ)) {
+    if (this.match(TOKEN.OP_ASG)) {
       const treeNodeExpressao = this.parseExpressao()
 
       if (!this.match(TOKEN.SEMI_COLON))
